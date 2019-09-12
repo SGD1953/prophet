@@ -1,0 +1,2396 @@
+{
+    "Require Class ABTest": {
+        "prefix": "reqABTest",
+        "body": [
+            "var ABTest = require('dw/campaign/ABTest');"
+        ],
+        "description": "Require Class ABTest"
+    },
+    "Require Class ABTestMgr": {
+        "prefix": "reqABTestMgr",
+        "body": [
+            "var ABTestMgr = require('dw/campaign/ABTestMgr');"
+        ],
+        "description": "Require Class ABTestMgr"
+    },
+    "Require Class ABTestSegment": {
+        "prefix": "reqABTestSegment",
+        "body": [
+            "var ABTestSegment = require('dw/campaign/ABTestSegment');"
+        ],
+        "description": "Require Class ABTestSegment"
+    },
+    "Require Class AmountDiscount": {
+        "prefix": "reqAmountDiscount",
+        "body": [
+            "var AmountDiscount = require('dw/campaign/AmountDiscount');"
+        ],
+        "description": "Require Class AmountDiscount"
+    },
+    "Require Class ApproachingDiscount": {
+        "prefix": "reqApproachingDiscount",
+        "body": [
+            "var ApproachingDiscount = require('dw/campaign/ApproachingDiscount');"
+        ],
+        "description": "Require Class ApproachingDiscount"
+    },
+    "Require Class BonusChoiceDiscount": {
+        "prefix": "reqBonusChoiceDiscount",
+        "body": [
+            "var BonusChoiceDiscount = require('dw/campaign/BonusChoiceDiscount');"
+        ],
+        "description": "Require Class BonusChoiceDiscount"
+    },
+    "Require Class BonusDiscount": {
+        "prefix": "reqBonusDiscount",
+        "body": [
+            "var BonusDiscount = require('dw/campaign/BonusDiscount');"
+        ],
+        "description": "Require Class BonusDiscount"
+    },
+    "Require Class Campaign": {
+        "prefix": "reqCampaign",
+        "body": [
+            "var Campaign = require('dw/campaign/Campaign');"
+        ],
+        "description": "Require Class Campaign"
+    },
+    "Require Class CampaignMgr": {
+        "prefix": "reqCampaignMgr",
+        "body": [
+            "var CampaignMgr = require('dw/campaign/CampaignMgr');"
+        ],
+        "description": "Require Class CampaignMgr"
+    },
+    "Require Class CampaignStatusCodes": {
+        "prefix": "reqCampaignStatusCodes",
+        "body": [
+            "var CampaignStatusCodes = require('dw/campaign/CampaignStatusCodes');"
+        ],
+        "description": "Require Class CampaignStatusCodes"
+    },
+    "Require Class Coupon": {
+        "prefix": "reqCoupon",
+        "body": [
+            "var Coupon = require('dw/campaign/Coupon');"
+        ],
+        "description": "Require Class Coupon"
+    },
+    "Require Class CouponMgr": {
+        "prefix": "reqCouponMgr",
+        "body": [
+            "var CouponMgr = require('dw/campaign/CouponMgr');"
+        ],
+        "description": "Require Class CouponMgr"
+    },
+    "Require Class CouponRedemption": {
+        "prefix": "reqCouponRedemption",
+        "body": [
+            "var CouponRedemption = require('dw/campaign/CouponRedemption');"
+        ],
+        "description": "Require Class CouponRedemption"
+    },
+    "Require Class CouponStatusCodes": {
+        "prefix": "reqCouponStatusCodes",
+        "body": [
+            "var CouponStatusCodes = require('dw/campaign/CouponStatusCodes');"
+        ],
+        "description": "Require Class CouponStatusCodes"
+    },
+    "Require Class Discount": {
+        "prefix": "reqDiscount",
+        "body": [
+            "var Discount = require('dw/campaign/Discount');"
+        ],
+        "description": "Require Class Discount"
+    },
+    "Require Class DiscountPlan": {
+        "prefix": "reqDiscountPlan",
+        "body": [
+            "var DiscountPlan = require('dw/campaign/DiscountPlan');"
+        ],
+        "description": "Require Class DiscountPlan"
+    },
+    "Require Class FixedPriceDiscount": {
+        "prefix": "reqFixedPriceDiscount",
+        "body": [
+            "var FixedPriceDiscount = require('dw/campaign/FixedPriceDiscount');"
+        ],
+        "description": "Require Class FixedPriceDiscount"
+    },
+    "Require Class FixedPriceShippingDiscount": {
+        "prefix": "reqFixedPriceShippingDiscount",
+        "body": [
+            "var FixedPriceShippingDiscount = require('dw/campaign/FixedPriceShippingDiscount');"
+        ],
+        "description": "Require Class FixedPriceShippingDiscount"
+    },
+    "Require Class FreeDiscount": {
+        "prefix": "reqFreeDiscount",
+        "body": [
+            "var FreeDiscount = require('dw/campaign/FreeDiscount');"
+        ],
+        "description": "Require Class FreeDiscount"
+    },
+    "Require Class FreeShippingDiscount": {
+        "prefix": "reqFreeShippingDiscount",
+        "body": [
+            "var FreeShippingDiscount = require('dw/campaign/FreeShippingDiscount');"
+        ],
+        "description": "Require Class FreeShippingDiscount"
+    },
+    "Require Class PercentageDiscount": {
+        "prefix": "reqPercentageDiscount",
+        "body": [
+            "var PercentageDiscount = require('dw/campaign/PercentageDiscount');"
+        ],
+        "description": "Require Class PercentageDiscount"
+    },
+    "Require Class PercentageOptionDiscount": {
+        "prefix": "reqPercentageOptionDiscount",
+        "body": [
+            "var PercentageOptionDiscount = require('dw/campaign/PercentageOptionDiscount');"
+        ],
+        "description": "Require Class PercentageOptionDiscount"
+    },
+    "Require Class PriceBookPriceDiscount": {
+        "prefix": "reqPriceBookPriceDiscount",
+        "body": [
+            "var PriceBookPriceDiscount = require('dw/campaign/PriceBookPriceDiscount');"
+        ],
+        "description": "Require Class PriceBookPriceDiscount"
+    },
+    "Require Class Promotion": {
+        "prefix": "reqPromotion",
+        "body": [
+            "var Promotion = require('dw/campaign/Promotion');"
+        ],
+        "description": "Require Class Promotion"
+    },
+    "Require Class PromotionMgr": {
+        "prefix": "reqPromotionMgr",
+        "body": [
+            "var PromotionMgr = require('dw/campaign/PromotionMgr');"
+        ],
+        "description": "Require Class PromotionMgr"
+    },
+    "Require Class PromotionPlan": {
+        "prefix": "reqPromotionPlan",
+        "body": [
+            "var PromotionPlan = require('dw/campaign/PromotionPlan');"
+        ],
+        "description": "Require Class PromotionPlan"
+    },
+    "Require Class SlotContent": {
+        "prefix": "reqSlotContent",
+        "body": [
+            "var SlotContent = require('dw/campaign/SlotContent');"
+        ],
+        "description": "Require Class SlotContent"
+    },
+    "Require Class SourceCodeGroup": {
+        "prefix": "reqSourceCodeGroup",
+        "body": [
+            "var SourceCodeGroup = require('dw/campaign/SourceCodeGroup');"
+        ],
+        "description": "Require Class SourceCodeGroup"
+    },
+    "Require Class SourceCodeInfo": {
+        "prefix": "reqSourceCodeInfo",
+        "body": [
+            "var SourceCodeInfo = require('dw/campaign/SourceCodeInfo');"
+        ],
+        "description": "Require Class SourceCodeInfo"
+    },
+    "Require Class SourceCodeStatusCodes": {
+        "prefix": "reqSourceCodeStatusCodes",
+        "body": [
+            "var SourceCodeStatusCodes = require('dw/campaign/SourceCodeStatusCodes');"
+        ],
+        "description": "Require Class SourceCodeStatusCodes"
+    },
+    "Require Class TotalFixedPriceDiscount": {
+        "prefix": "reqTotalFixedPriceDiscount",
+        "body": [
+            "var TotalFixedPriceDiscount = require('dw/campaign/TotalFixedPriceDiscount');"
+        ],
+        "description": "Require Class TotalFixedPriceDiscount"
+    },
+    "Require Class Catalog": {
+        "prefix": "reqCatalog",
+        "body": [
+            "var Catalog = require('dw/catalog/Catalog');"
+        ],
+        "description": "Require Class Catalog"
+    },
+    "Require Class CatalogMgr": {
+        "prefix": "reqCatalogMgr",
+        "body": [
+            "var CatalogMgr = require('dw/catalog/CatalogMgr');"
+        ],
+        "description": "Require Class CatalogMgr"
+    },
+    "Require Class Category": {
+        "prefix": "reqCategory",
+        "body": [
+            "var Category = require('dw/catalog/Category');"
+        ],
+        "description": "Require Class Category"
+    },
+    "Require Class CategoryAssignment": {
+        "prefix": "reqCategoryAssignment",
+        "body": [
+            "var CategoryAssignment = require('dw/catalog/CategoryAssignment');"
+        ],
+        "description": "Require Class CategoryAssignment"
+    },
+    "Require Class CategoryLink": {
+        "prefix": "reqCategoryLink",
+        "body": [
+            "var CategoryLink = require('dw/catalog/CategoryLink');"
+        ],
+        "description": "Require Class CategoryLink"
+    },
+    "Require Class PriceBook": {
+        "prefix": "reqPriceBook",
+        "body": [
+            "var PriceBook = require('dw/catalog/PriceBook');"
+        ],
+        "description": "Require Class PriceBook"
+    },
+    "Require Class PriceBookMgr": {
+        "prefix": "reqPriceBookMgr",
+        "body": [
+            "var PriceBookMgr = require('dw/catalog/PriceBookMgr');"
+        ],
+        "description": "Require Class PriceBookMgr"
+    },
+    "Require Class Product": {
+        "prefix": "reqProduct",
+        "body": [
+            "var Product = require('dw/catalog/Product');"
+        ],
+        "description": "Require Class Product"
+    },
+    "Require Class ProductActiveData": {
+        "prefix": "reqProductActiveData",
+        "body": [
+            "var ProductActiveData = require('dw/catalog/ProductActiveData');"
+        ],
+        "description": "Require Class ProductActiveData"
+    },
+    "Require Class ProductAttributeModel": {
+        "prefix": "reqProductAttributeModel",
+        "body": [
+            "var ProductAttributeModel = require('dw/catalog/ProductAttributeModel');"
+        ],
+        "description": "Require Class ProductAttributeModel"
+    },
+    "Require Class ProductAvailabilityLevels": {
+        "prefix": "reqProductAvailabilityLevels",
+        "body": [
+            "var ProductAvailabilityLevels = require('dw/catalog/ProductAvailabilityLevels');"
+        ],
+        "description": "Require Class ProductAvailabilityLevels"
+    },
+    "Require Class ProductAvailabilityModel": {
+        "prefix": "reqProductAvailabilityModel",
+        "body": [
+            "var ProductAvailabilityModel = require('dw/catalog/ProductAvailabilityModel');"
+        ],
+        "description": "Require Class ProductAvailabilityModel"
+    },
+    "Require Class ProductInventoryList": {
+        "prefix": "reqProductInventoryList",
+        "body": [
+            "var ProductInventoryList = require('dw/catalog/ProductInventoryList');"
+        ],
+        "description": "Require Class ProductInventoryList"
+    },
+    "Require Class ProductInventoryMgr": {
+        "prefix": "reqProductInventoryMgr",
+        "body": [
+            "var ProductInventoryMgr = require('dw/catalog/ProductInventoryMgr');"
+        ],
+        "description": "Require Class ProductInventoryMgr"
+    },
+    "Require Class ProductInventoryRecord": {
+        "prefix": "reqProductInventoryRecord",
+        "body": [
+            "var ProductInventoryRecord = require('dw/catalog/ProductInventoryRecord');"
+        ],
+        "description": "Require Class ProductInventoryRecord"
+    },
+    "Require Class ProductLink": {
+        "prefix": "reqProductLink",
+        "body": [
+            "var ProductLink = require('dw/catalog/ProductLink');"
+        ],
+        "description": "Require Class ProductLink"
+    },
+    "Require Class ProductMgr": {
+        "prefix": "reqProductMgr",
+        "body": [
+            "var ProductMgr = require('dw/catalog/ProductMgr');"
+        ],
+        "description": "Require Class ProductMgr"
+    },
+    "Require Class ProductOption": {
+        "prefix": "reqProductOption",
+        "body": [
+            "var ProductOption = require('dw/catalog/ProductOption');"
+        ],
+        "description": "Require Class ProductOption"
+    },
+    "Require Class ProductOptionModel": {
+        "prefix": "reqProductOptionModel",
+        "body": [
+            "var ProductOptionModel = require('dw/catalog/ProductOptionModel');"
+        ],
+        "description": "Require Class ProductOptionModel"
+    },
+    "Require Class ProductOptionValue": {
+        "prefix": "reqProductOptionValue",
+        "body": [
+            "var ProductOptionValue = require('dw/catalog/ProductOptionValue');"
+        ],
+        "description": "Require Class ProductOptionValue"
+    },
+    "Require Class ProductPriceInfo": {
+        "prefix": "reqProductPriceInfo",
+        "body": [
+            "var ProductPriceInfo = require('dw/catalog/ProductPriceInfo');"
+        ],
+        "description": "Require Class ProductPriceInfo"
+    },
+    "Require Class ProductPriceModel": {
+        "prefix": "reqProductPriceModel",
+        "body": [
+            "var ProductPriceModel = require('dw/catalog/ProductPriceModel');"
+        ],
+        "description": "Require Class ProductPriceModel"
+    },
+    "Require Class ProductPriceTable": {
+        "prefix": "reqProductPriceTable",
+        "body": [
+            "var ProductPriceTable = require('dw/catalog/ProductPriceTable');"
+        ],
+        "description": "Require Class ProductPriceTable"
+    },
+    "Require Class ProductSearchHit": {
+        "prefix": "reqProductSearchHit",
+        "body": [
+            "var ProductSearchHit = require('dw/catalog/ProductSearchHit');"
+        ],
+        "description": "Require Class ProductSearchHit"
+    },
+    "Require Class ProductSearchModel": {
+        "prefix": "reqProductSearchModel",
+        "body": [
+            "var ProductSearchModel = require('dw/catalog/ProductSearchModel');"
+        ],
+        "description": "Require Class ProductSearchModel"
+    },
+    "Require Class ProductSearchRefinementDefinition": {
+        "prefix": "reqProductSearchRefinementDefinition",
+        "body": [
+            "var ProductSearchRefinementDefinition = require('dw/catalog/ProductSearchRefinementDefinition');"
+        ],
+        "description": "Require Class ProductSearchRefinementDefinition"
+    },
+    "Require Class ProductSearchRefinements": {
+        "prefix": "reqProductSearchRefinements",
+        "body": [
+            "var ProductSearchRefinements = require('dw/catalog/ProductSearchRefinements');"
+        ],
+        "description": "Require Class ProductSearchRefinements"
+    },
+    "Require Class ProductSearchRefinementValue": {
+        "prefix": "reqProductSearchRefinementValue",
+        "body": [
+            "var ProductSearchRefinementValue = require('dw/catalog/ProductSearchRefinementValue');"
+        ],
+        "description": "Require Class ProductSearchRefinementValue"
+    },
+    "Require Class ProductVariationAttribute": {
+        "prefix": "reqProductVariationAttribute",
+        "body": [
+            "var ProductVariationAttribute = require('dw/catalog/ProductVariationAttribute');"
+        ],
+        "description": "Require Class ProductVariationAttribute"
+    },
+    "Require Class ProductVariationAttributeValue": {
+        "prefix": "reqProductVariationAttributeValue",
+        "body": [
+            "var ProductVariationAttributeValue = require('dw/catalog/ProductVariationAttributeValue');"
+        ],
+        "description": "Require Class ProductVariationAttributeValue"
+    },
+    "Require Class ProductVariationModel": {
+        "prefix": "reqProductVariationModel",
+        "body": [
+            "var ProductVariationModel = require('dw/catalog/ProductVariationModel');"
+        ],
+        "description": "Require Class ProductVariationModel"
+    },
+    "Require Class Recommendation": {
+        "prefix": "reqRecommendation",
+        "body": [
+            "var Recommendation = require('dw/catalog/Recommendation');"
+        ],
+        "description": "Require Class Recommendation"
+    },
+    "Require Class SearchModel": {
+        "prefix": "reqSearchModel",
+        "body": [
+            "var SearchModel = require('dw/catalog/SearchModel');"
+        ],
+        "description": "Require Class SearchModel"
+    },
+    "Require Class SearchRefinementDefinition": {
+        "prefix": "reqSearchRefinementDefinition",
+        "body": [
+            "var SearchRefinementDefinition = require('dw/catalog/SearchRefinementDefinition');"
+        ],
+        "description": "Require Class SearchRefinementDefinition"
+    },
+    "Require Class SearchRefinements": {
+        "prefix": "reqSearchRefinements",
+        "body": [
+            "var SearchRefinements = require('dw/catalog/SearchRefinements');"
+        ],
+        "description": "Require Class SearchRefinements"
+    },
+    "Require Class SearchRefinementValue": {
+        "prefix": "reqSearchRefinementValue",
+        "body": [
+            "var SearchRefinementValue = require('dw/catalog/SearchRefinementValue');"
+        ],
+        "description": "Require Class SearchRefinementValue"
+    },
+    "Require Class SortingOption": {
+        "prefix": "reqSortingOption",
+        "body": [
+            "var SortingOption = require('dw/catalog/SortingOption');"
+        ],
+        "description": "Require Class SortingOption"
+    },
+    "Require Class SortingRule": {
+        "prefix": "reqSortingRule",
+        "body": [
+            "var SortingRule = require('dw/catalog/SortingRule');"
+        ],
+        "description": "Require Class SortingRule"
+    },
+    "Require Class Store": {
+        "prefix": "reqStore",
+        "body": [
+            "var Store = require('dw/catalog/Store');"
+        ],
+        "description": "Require Class Store"
+    },
+    "Require Class StoreGroup": {
+        "prefix": "reqStoreGroup",
+        "body": [
+            "var StoreGroup = require('dw/catalog/StoreGroup');"
+        ],
+        "description": "Require Class StoreGroup"
+    },
+    "Require Class StoreMgr": {
+        "prefix": "reqStoreMgr",
+        "body": [
+            "var StoreMgr = require('dw/catalog/StoreMgr');"
+        ],
+        "description": "Require Class StoreMgr"
+    },
+    "Require Class Variant": {
+        "prefix": "reqVariant",
+        "body": [
+            "var Variant = require('dw/catalog/Variant');"
+        ],
+        "description": "Require Class Variant"
+    },
+    "Require Class VariationGroup": {
+        "prefix": "reqVariationGroup",
+        "body": [
+            "var VariationGroup = require('dw/catalog/VariationGroup');"
+        ],
+        "description": "Require Class VariationGroup"
+    },
+    "Require Class Content": {
+        "prefix": "reqContent",
+        "body": [
+            "var Content = require('dw/content/Content');"
+        ],
+        "description": "Require Class Content"
+    },
+    "Require Class ContentMgr": {
+        "prefix": "reqContentMgr",
+        "body": [
+            "var ContentMgr = require('dw/content/ContentMgr');"
+        ],
+        "description": "Require Class ContentMgr"
+    },
+    "Require Class ContentSearchModel": {
+        "prefix": "reqContentSearchModel",
+        "body": [
+            "var ContentSearchModel = require('dw/content/ContentSearchModel');"
+        ],
+        "description": "Require Class ContentSearchModel"
+    },
+    "Require Class ContentSearchRefinementDefinition": {
+        "prefix": "reqContentSearchRefinementDefinition",
+        "body": [
+            "var ContentSearchRefinementDefinition = require('dw/content/ContentSearchRefinementDefinition');"
+        ],
+        "description": "Require Class ContentSearchRefinementDefinition"
+    },
+    "Require Class ContentSearchRefinements": {
+        "prefix": "reqContentSearchRefinements",
+        "body": [
+            "var ContentSearchRefinements = require('dw/content/ContentSearchRefinements');"
+        ],
+        "description": "Require Class ContentSearchRefinements"
+    },
+    "Require Class ContentSearchRefinementValue": {
+        "prefix": "reqContentSearchRefinementValue",
+        "body": [
+            "var ContentSearchRefinementValue = require('dw/content/ContentSearchRefinementValue');"
+        ],
+        "description": "Require Class ContentSearchRefinementValue"
+    },
+    "Require Class Folder": {
+        "prefix": "reqFolder",
+        "body": [
+            "var Folder = require('dw/content/Folder');"
+        ],
+        "description": "Require Class Folder"
+    },
+    "Require Class Library": {
+        "prefix": "reqLibrary",
+        "body": [
+            "var Library = require('dw/content/Library');"
+        ],
+        "description": "Require Class Library"
+    },
+    "Require Class MarkupText": {
+        "prefix": "reqMarkupText",
+        "body": [
+            "var MarkupText = require('dw/content/MarkupText');"
+        ],
+        "description": "Require Class MarkupText"
+    },
+    "Require Class MediaFile": {
+        "prefix": "reqMediaFile",
+        "body": [
+            "var MediaFile = require('dw/content/MediaFile');"
+        ],
+        "description": "Require Class MediaFile"
+    },
+    "Require Class CertificateRef": {
+        "prefix": "reqCertificateRef",
+        "body": [
+            "var CertificateRef = require('dw/crypto/CertificateRef');"
+        ],
+        "description": "Require Class CertificateRef"
+    },
+    "Require Class Cipher": {
+        "prefix": "reqCipher",
+        "body": [
+            "var Cipher = require('dw/crypto/Cipher');"
+        ],
+        "description": "Require Class Cipher"
+    },
+    "Require Class Encoding": {
+        "prefix": "reqEncoding",
+        "body": [
+            "var Encoding = require('dw/crypto/Encoding');"
+        ],
+        "description": "Require Class Encoding"
+    },
+    "Require Class KeyRef": {
+        "prefix": "reqKeyRef",
+        "body": [
+            "var KeyRef = require('dw/crypto/KeyRef');"
+        ],
+        "description": "Require Class KeyRef"
+    },
+    "Require Class Mac": {
+        "prefix": "reqMac",
+        "body": [
+            "var Mac = require('dw/crypto/Mac');"
+        ],
+        "description": "Require Class Mac"
+    },
+    "Require Class MessageDigest": {
+        "prefix": "reqMessageDigest",
+        "body": [
+            "var MessageDigest = require('dw/crypto/MessageDigest');"
+        ],
+        "description": "Require Class MessageDigest"
+    },
+    "Require Class SecureRandom": {
+        "prefix": "reqSecureRandom",
+        "body": [
+            "var SecureRandom = require('dw/crypto/SecureRandom');"
+        ],
+        "description": "Require Class SecureRandom"
+    },
+    "Require Class Signature": {
+        "prefix": "reqSignature",
+        "body": [
+            "var Signature = require('dw/crypto/Signature');"
+        ],
+        "description": "Require Class Signature"
+    },
+    "Require Class AddressBook": {
+        "prefix": "reqAddressBook",
+        "body": [
+            "var AddressBook = require('dw/customer/AddressBook');"
+        ],
+        "description": "Require Class AddressBook"
+    },
+    "Require Class AgentUserMgr": {
+        "prefix": "reqAgentUserMgr",
+        "body": [
+            "var AgentUserMgr = require('dw/customer/AgentUserMgr');"
+        ],
+        "description": "Require Class AgentUserMgr"
+    },
+    "Require Class AgentUserStatusCodes": {
+        "prefix": "reqAgentUserStatusCodes",
+        "body": [
+            "var AgentUserStatusCodes = require('dw/system/AgentUserStatusCodes');"
+        ],
+        "description": "Require Class AgentUserStatusCodes"
+    },
+    "Require Class Credentials": {
+        "prefix": "reqCredentials",
+        "body": [
+            "var Credentials = require('dw/customer/Credentials');"
+        ],
+        "description": "Require Class Credentials"
+    },
+    "Require Class Customer": {
+        "prefix": "reqCustomer",
+        "body": [
+            "var Customer = require('dw/customer/Customer');"
+        ],
+        "description": "Require Class Customer"
+    },
+    "Require Class CustomerActiveData": {
+        "prefix": "reqCustomerActiveData",
+        "body": [
+            "var CustomerActiveData = require('dw/customer/CustomerActiveData');"
+        ],
+        "description": "Require Class CustomerActiveData"
+    },
+    "Require Class CustomerAddress": {
+        "prefix": "reqCustomerAddress",
+        "body": [
+            "var CustomerAddress = require('dw/customer/CustomerAddress');"
+        ],
+        "description": "Require Class CustomerAddress"
+    },
+    "Require Class CustomerGroup": {
+        "prefix": "reqCustomerGroup",
+        "body": [
+            "var CustomerGroup = require('dw/customer/CustomerGroup');"
+        ],
+        "description": "Require Class CustomerGroup"
+    },
+    "Require Class CustomerList": {
+        "prefix": "reqCustomerList",
+        "body": [
+            "var CustomerList = require('dw/customer/CustomerList');"
+        ],
+        "description": "Require Class CustomerList"
+    },
+    "Require Class CustomerMgr": {
+        "prefix": "reqCustomerMgr",
+        "body": [
+            "var CustomerMgr = require('dw/customer/CustomerMgr');"
+        ],
+        "description": "Require Class CustomerMgr"
+    },
+    "Require Class CustomerPasswordConstraints": {
+        "prefix": "reqCustomerPasswordConstraints",
+        "body": [
+            "var CustomerPasswordConstraints = require('dw/customer/CustomerPasswordConstraints');"
+        ],
+        "description": "Require Class CustomerPasswordConstraints"
+    },
+    "Require Class CustomerPaymentInstrument": {
+        "prefix": "reqCustomerPaymentInstrument",
+        "body": [
+            "var CustomerPaymentInstrument = require('dw/customer/CustomerPaymentInstrument');"
+        ],
+        "description": "Require Class CustomerPaymentInstrument"
+    },
+    "Require Class CustomerStatusCodes": {
+        "prefix": "reqCustomerStatusCodes",
+        "body": [
+            "var CustomerStatusCodes = require('dw/customer/CustomerStatusCodes');"
+        ],
+        "description": "Require Class CustomerStatusCodes"
+    },
+    "Require Class EncryptedObject": {
+        "prefix": "reqEncryptedObject",
+        "body": [
+            "var EncryptedObject = require('dw/customer/EncryptedObject');"
+        ],
+        "description": "Require Class EncryptedObject"
+    },
+    "Require Class ExternalProfile": {
+        "prefix": "reqExternalProfile",
+        "body": [
+            "var ExternalProfile = require('dw/customer/ExternalProfile');"
+        ],
+        "description": "Require Class ExternalProfile"
+    },
+    "Require Class OrderHistory": {
+        "prefix": "reqOrderHistory",
+        "body": [
+            "var OrderHistory = require('dw/customer/OrderHistory');"
+        ],
+        "description": "Require Class OrderHistory"
+    },
+    "Require Class ProductList": {
+        "prefix": "reqProductList",
+        "body": [
+            "var ProductList = require('dw/customer/ProductList');"
+        ],
+        "description": "Require Class ProductList"
+    },
+    "Require Class ProductListItem": {
+        "prefix": "reqProductListItem",
+        "body": [
+            "var ProductListItem = require('dw/customer/ProductListItem');"
+        ],
+        "description": "Require Class ProductListItem"
+    },
+    "Require Class ProductListItemPurchase": {
+        "prefix": "reqProductListItemPurchase",
+        "body": [
+            "var ProductListItemPurchase = require('dw/customer/ProductListItemPurchase');"
+        ],
+        "description": "Require Class ProductListItemPurchase"
+    },
+    "Require Class ProductListMgr": {
+        "prefix": "reqProductListMgr",
+        "body": [
+            "var ProductListMgr = require('dw/customer/ProductListMgr');"
+        ],
+        "description": "Require Class ProductListMgr"
+    },
+    "Require Class ProductListRegistrant": {
+        "prefix": "reqProductListRegistrant",
+        "body": [
+            "var ProductListRegistrant = require('dw/customer/ProductListRegistrant');"
+        ],
+        "description": "Require Class ProductListRegistrant"
+    },
+    "Require Class Profile": {
+        "prefix": "reqProfile",
+        "body": [
+            "var Profile = require('dw/customer/Profile');"
+        ],
+        "description": "Require Class Profile"
+    },
+    "Require Class Wallet": {
+        "prefix": "reqWallet",
+        "body": [
+            "var Wallet = require('dw/customer/Wallet');"
+        ],
+        "description": "Require Class Wallet"
+    },
+    "Require Class OAuthAccessTokenResponse": {
+        "prefix": "reqOAuthAccessTokenResponse",
+        "body": [
+            "var OAuthAccessTokenResponse = require('dw/customer.oauth/OAuthAccessTokenResponse');"
+        ],
+        "description": "Require Class OAuthAccessTokenResponse"
+    },
+    "Require Class OAuthFinalizedResponse": {
+        "prefix": "reqOAuthFinalizedResponse",
+        "body": [
+            "var OAuthFinalizedResponse = require('dw/customer.oauth/OAuthFinalizedResponse');"
+        ],
+        "description": "Require Class OAuthFinalizedResponse"
+    },
+    "Require Class OAuthLoginFlowMgr": {
+        "prefix": "reqOAuthLoginFlowMgr",
+        "body": [
+            "var OAuthLoginFlowMgr = require('dw/customer.oauth/OAuthLoginFlowMgr');"
+        ],
+        "description": "Require Class OAuthLoginFlowMgr"
+    },
+    "Require Class OAuthUserInfoResponse": {
+        "prefix": "reqOAuthUserInfoResponse",
+        "body": [
+            "var OAuthUserInfoResponse = require('dw/customer.oauth/OAuthUserInfoResponse');"
+        ],
+        "description": "Require Class OAuthUserInfoResponse"
+    },
+    "Require Class CSVStreamReader": {
+        "prefix": "reqCSVStreamReader",
+        "body": [
+            "var CSVStreamReader = require('dw/io/CSVStreamReader');"
+        ],
+        "description": "Require Class CSVStreamReader"
+    },
+    "Require Class CSVStreamWriter": {
+        "prefix": "reqCSVStreamWriter",
+        "body": [
+            "var CSVStreamWriter = require('dw/io/CSVStreamWriter');"
+        ],
+        "description": "Require Class CSVStreamWriter"
+    },
+    "Require Class File": {
+        "prefix": "reqFile",
+        "body": [
+            "var File = require('dw/io/File');"
+        ],
+        "description": "Require Class File"
+    },
+    "Require Class FileReader": {
+        "prefix": "reqFileReader",
+        "body": [
+            "var FileReader = require('dw/io/FileReader');"
+        ],
+        "description": "Require Class FileReader"
+    },
+    "Require Class FileWriter": {
+        "prefix": "reqFileWriter",
+        "body": [
+            "var FileWriter = require('dw/io/FileWriter');"
+        ],
+        "description": "Require Class FileWriter"
+    },
+    "Require Class InputStream": {
+        "prefix": "reqInputStream",
+        "body": [
+            "var InputStream = require('dw/io/InputStream');"
+        ],
+        "description": "Require Class InputStream"
+    },
+    "Require Class OutputStream": {
+        "prefix": "reqOutputStream",
+        "body": [
+            "var OutputStream = require('dw/io/OutputStream');"
+        ],
+        "description": "Require Class OutputStream"
+    },
+    "Require Class PrintWriter": {
+        "prefix": "reqPrintWriter",
+        "body": [
+            "var PrintWriter = require('dw/io/PrintWriter');"
+        ],
+        "description": "Require Class PrintWriter"
+    },
+    "Require Class RandomAccessFileReader": {
+        "prefix": "reqRandomAccessFileReader",
+        "body": [
+            "var RandomAccessFileReader = require('dw/io/RandomAccessFileReader');"
+        ],
+        "description": "Require Class RandomAccessFileReader"
+    },
+    "Require Class Reader": {
+        "prefix": "reqReader",
+        "body": [
+            "var Reader = require('dw/io/Reader');"
+        ],
+        "description": "Require Class Reader"
+    },
+    "Require Class StringWriter": {
+        "prefix": "reqStringWriter",
+        "body": [
+            "var StringWriter = require('dw/io/StringWriter');"
+        ],
+        "description": "Require Class StringWriter"
+    },
+    "Require Class Writer": {
+        "prefix": "reqWriter",
+        "body": [
+            "var Writer = require('dw/io/Writer');"
+        ],
+        "description": "Require Class Writer"
+    },
+    "Require Class XMLIndentingStreamWriter": {
+        "prefix": "reqXMLIndentingStreamWriter",
+        "body": [
+            "var XMLIndentingStreamWriter = require('dw/io/XMLIndentingStreamWriter');"
+        ],
+        "description": "Require Class XMLIndentingStreamWriter"
+    },
+    "Require Class XMLStreamConstants": {
+        "prefix": "reqXMLStreamConstants",
+        "body": [
+            "var XMLStreamConstants = require('dw/io/XMLStreamConstants');"
+        ],
+        "description": "Require Class XMLStreamConstants"
+    },
+    "Require Class XMLStreamReader": {
+        "prefix": "reqXMLStreamReader",
+        "body": [
+            "var XMLStreamReader = require('dw/io/XMLStreamReader');"
+        ],
+        "description": "Require Class XMLStreamReader"
+    },
+    "Require Class XMLStreamWriter": {
+        "prefix": "reqXMLStreamWriter",
+        "body": [
+            "var XMLStreamWriter = require('dw/io/XMLStreamWriter');"
+        ],
+        "description": "Require Class XMLStreamWriter"
+    },
+    "Require Class JobExecution": {
+        "prefix": "reqJobExecution",
+        "body": [
+            "var JobExecution = require('dw/job/JobExecution');"
+        ],
+        "description": "Require Class JobExecution"
+    },
+    "Require Class JobStepExecution": {
+        "prefix": "reqJobStepExecution",
+        "body": [
+            "var JobStepExecution = require('dw/job/JobStepExecution');"
+        ],
+        "description": "Require Class JobStepExecution"
+    },
+    "Require Class FTPClient": {
+        "prefix": "reqFTPClient",
+        "body": [
+            "var FTPClient = require('dw/net/FTPClient');"
+        ],
+        "description": "Require Class FTPClient"
+    },
+    "Require Class FTPFileInfo": {
+        "prefix": "reqFTPFileInfo",
+        "body": [
+            "var FTPFileInfo = require('dw/net/FTPFileInfo');"
+        ],
+        "description": "Require Class FTPFileInfo"
+    },
+    "Require Class HTTPClient": {
+        "prefix": "reqHTTPClient",
+        "body": [
+            "var HTTPClient = require('dw/net/HTTPClient');"
+        ],
+        "description": "Require Class HTTPClient"
+    },
+    "Require Class HTTPRequestPart": {
+        "prefix": "reqHTTPRequestPart",
+        "body": [
+            "var HTTPRequestPart = require('dw/net/HTTPRequestPart');"
+        ],
+        "description": "Require Class HTTPRequestPart"
+    },
+    "Require Class Mail": {
+        "prefix": "reqMail",
+        "body": [
+            "var Mail = require('dw/net/Mail');"
+        ],
+        "description": "Require Class Mail"
+    },
+    "Require Class SFTPClient": {
+        "prefix": "reqSFTPClient",
+        "body": [
+            "var SFTPClient = require('dw/net/SFTPClient');"
+        ],
+        "description": "Require Class SFTPClient"
+    },
+    "Require Class SFTPFileInfo": {
+        "prefix": "reqSFTPFileInfo",
+        "body": [
+            "var SFTPFileInfo = require('dw/net/SFTPFileInfo');"
+        ],
+        "description": "Require Class SFTPFileInfo"
+    },
+    "Require Class WebDAVClient": {
+        "prefix": "reqWebDAVClient",
+        "body": [
+            "var WebDAVClient = require('dw/net/WebDAVClient');"
+        ],
+        "description": "Require Class WebDAVClient"
+    },
+    "Require Class WebDAVFileInfo": {
+        "prefix": "reqWebDAVFileInfo",
+        "body": [
+            "var WebDAVFileInfo = require('dw/net/WebDAVFileInfo');"
+        ],
+        "description": "Require Class WebDAVFileInfo"
+    },
+    "Require Class ActiveData": {
+        "prefix": "reqActiveData",
+        "body": [
+            "var ActiveData = require('dw/object/ActiveData');"
+        ],
+        "description": "Require Class ActiveData"
+    },
+    "Require Class CustomAttributes": {
+        "prefix": "reqCustomAttributes",
+        "body": [
+            "var CustomAttributes = require('dw/object/CustomAttributes');"
+        ],
+        "description": "Require Class CustomAttributes"
+    },
+    "Require Class CustomObject": {
+        "prefix": "reqCustomObject",
+        "body": [
+            "var CustomObject = require('dw/object/CustomObject');"
+        ],
+        "description": "Require Class CustomObject"
+    },
+    "Require Class CustomObjectMgr": {
+        "prefix": "reqCustomObjectMgr",
+        "body": [
+            "var CustomObjectMgr = require('dw/object/CustomObjectMgr');"
+        ],
+        "description": "Require Class CustomObjectMgr"
+    },
+    "Require Class Extensible": {
+        "prefix": "reqExtensible",
+        "body": [
+            "var Extensible = require('dw/object/Extensible');"
+        ],
+        "description": "Require Class Extensible"
+    },
+    "Require Class ExtensibleObject": {
+        "prefix": "reqExtensibleObject",
+        "body": [
+            "var ExtensibleObject = require('dw/object/ExtensibleObject');"
+        ],
+        "description": "Require Class ExtensibleObject"
+    },
+    "Require Class Note": {
+        "prefix": "reqNote",
+        "body": [
+            "var Note = require('dw/object/Note');"
+        ],
+        "description": "Require Class Note"
+    },
+    "Require Class ObjectAttributeDefinition": {
+        "prefix": "reqObjectAttributeDefinition",
+        "body": [
+            "var ObjectAttributeDefinition = require('dw/object/ObjectAttributeDefinition');"
+        ],
+        "description": "Require Class ObjectAttributeDefinition"
+    },
+    "Require Class ObjectAttributeGroup": {
+        "prefix": "reqObjectAttributeGroup",
+        "body": [
+            "var ObjectAttributeGroup = require('dw/object/ObjectAttributeGroup');"
+        ],
+        "description": "Require Class ObjectAttributeGroup"
+    },
+    "Require Class ObjectAttributeValueDefinition": {
+        "prefix": "reqObjectAttributeValueDefinition",
+        "body": [
+            "var ObjectAttributeValueDefinition = require('dw/object/ObjectAttributeValueDefinition');"
+        ],
+        "description": "Require Class ObjectAttributeValueDefinition"
+    },
+    "Require Class ObjectTypeDefinition": {
+        "prefix": "reqObjectTypeDefinition",
+        "body": [
+            "var ObjectTypeDefinition = require('dw/object/ObjectTypeDefinition');"
+        ],
+        "description": "Require Class ObjectTypeDefinition"
+    },
+    "Require Class PersistentObject": {
+        "prefix": "reqPersistentObject",
+        "body": [
+            "var PersistentObject = require('dw/object/PersistentObject');"
+        ],
+        "description": "Require Class PersistentObject"
+    },
+    "Require Class SimpleExtensible": {
+        "prefix": "reqSimpleExtensible",
+        "body": [
+            "var SimpleExtensible = require('dw/object/SimpleExtensible');"
+        ],
+        "description": "Require Class SimpleExtensible"
+    },
+    "Require Class SystemObjectMgr": {
+        "prefix": "reqSystemObjectMgr",
+        "body": [
+            "var SystemObjectMgr = require('dw/object/SystemObjectMgr');"
+        ],
+        "description": "Require Class SystemObjectMgr"
+    },
+    "Require Class AbstractItem": {
+        "prefix": "reqAbstractItem",
+        "body": [
+            "var AbstractItem = require('dw/order/AbstractItem');"
+        ],
+        "description": "Require Class AbstractItem"
+    },
+    "Require Class AbstractItemCtnr": {
+        "prefix": "reqAbstractItemCtnr",
+        "body": [
+            "var AbstractItemCtnr = require('dw/order/AbstractItemCtnr');"
+        ],
+        "description": "Require Class AbstractItemCtnr"
+    },
+    "Require Class Appeasement": {
+        "prefix": "reqAppeasement",
+        "body": [
+            "var Appeasement = require('dw/order/Appeasement');"
+        ],
+        "description": "Require Class Appeasement"
+    },
+    "Require Class AppeasementItem": {
+        "prefix": "reqAppeasementItem",
+        "body": [
+            "var AppeasementItem = require('dw/order/AppeasementItem');"
+        ],
+        "description": "Require Class AppeasementItem"
+    },
+    "Require Class Basket": {
+        "prefix": "reqBasket",
+        "body": [
+            "var Basket = require('dw/order/Basket');"
+        ],
+        "description": "Require Class Basket"
+    },
+    "Require Class BasketMgr": {
+        "prefix": "reqBasketMgr",
+        "body": [
+            "var BasketMgr = require('dw/order/BasketMgr');"
+        ],
+        "description": "Require Class BasketMgr"
+    },
+    "Require Class BonusDiscountLineItem": {
+        "prefix": "reqBonusDiscountLineItem",
+        "body": [
+            "var BonusDiscountLineItem = require('dw/order/BonusDiscountLineItem');"
+        ],
+        "description": "Require Class BonusDiscountLineItem"
+    },
+    "Require Class CouponLineItem": {
+        "prefix": "reqCouponLineItem",
+        "body": [
+            "var CouponLineItem = require('dw/order/CouponLineItem');"
+        ],
+        "description": "Require Class CouponLineItem"
+    },
+    "Require Class CreateBasketFromOrderException": {
+        "prefix": "reqCreateBasketFromOrderException",
+        "body": [
+            "var CreateBasketFromOrderException = require('dw/order/CreateBasketFromOrderException');"
+        ],
+        "description": "Require Class CreateBasketFromOrderException"
+    },
+    "Require Class CreateCouponLineItemException": {
+        "prefix": "reqCreateCouponLineItemException",
+        "body": [
+            "var CreateCouponLineItemException = require('dw/order/CreateCouponLineItemException');"
+        ],
+        "description": "Require Class CreateCouponLineItemException"
+    },
+    "Require Class CreateOrderException": {
+        "prefix": "reqCreateOrderException",
+        "body": [
+            "var CreateOrderException = require('dw/order/CreateOrderException');"
+        ],
+        "description": "Require Class CreateOrderException"
+    },
+    "Require Class GiftCertificate": {
+        "prefix": "reqGiftCertificate",
+        "body": [
+            "var GiftCertificate = require('dw/order/GiftCertificate');"
+        ],
+        "description": "Require Class GiftCertificate"
+    },
+    "Require Class GiftCertificateLineItem": {
+        "prefix": "reqGiftCertificateLineItem",
+        "body": [
+            "var GiftCertificateLineItem = require('dw/order/GiftCertificateLineItem');"
+        ],
+        "description": "Require Class GiftCertificateLineItem"
+    },
+    "Require Class GiftCertificateMgr": {
+        "prefix": "reqGiftCertificateMgr",
+        "body": [
+            "var GiftCertificateMgr = require('dw/order/GiftCertificateMgr');"
+        ],
+        "description": "Require Class GiftCertificateMgr"
+    },
+    "Require Class GiftCertificateStatusCodes": {
+        "prefix": "reqGiftCertificateStatusCodes",
+        "body": [
+            "var GiftCertificateStatusCodes = require('dw/order/GiftCertificateStatusCodes');"
+        ],
+        "description": "Require Class GiftCertificateStatusCodes"
+    },
+    "Require Class Invoice": {
+        "prefix": "reqInvoice",
+        "body": [
+            "var Invoice = require('dw/order/Invoice');"
+        ],
+        "description": "Require Class Invoice"
+    },
+    "Require Class InvoiceItem": {
+        "prefix": "reqInvoiceItem",
+        "body": [
+            "var InvoiceItem = require('dw/order/InvoiceItem');"
+        ],
+        "description": "Require Class InvoiceItem"
+    },
+    "Require Class LineItem": {
+        "prefix": "reqLineItem",
+        "body": [
+            "var LineItem = require('dw/order/LineItem');"
+        ],
+        "description": "Require Class LineItem"
+    },
+    "Require Class LineItemCtnr": {
+        "prefix": "reqLineItemCtnr",
+        "body": [
+            "var LineItemCtnr = require('dw/order/LineItemCtnr');"
+        ],
+        "description": "Require Class LineItemCtnr"
+    },
+    "Require Class Order": {
+        "prefix": "reqOrder",
+        "body": [
+            "var Order = require('dw/order/Order');"
+        ],
+        "description": "Require Class Order"
+    },
+    "Require Class OrderAddress": {
+        "prefix": "reqOrderAddress",
+        "body": [
+            "var OrderAddress = require('dw/order/OrderAddress');"
+        ],
+        "description": "Require Class OrderAddress"
+    },
+    "Require Class OrderItem": {
+        "prefix": "reqOrderItem",
+        "body": [
+            "var OrderItem = require('dw/order/OrderItem');"
+        ],
+        "description": "Require Class OrderItem"
+    },
+    "Require Class OrderMgr": {
+        "prefix": "reqOrderMgr",
+        "body": [
+            "var OrderMgr = require('dw/order/OrderMgr');"
+        ],
+        "description": "Require Class OrderMgr"
+    },
+    "Require Class OrderPaymentInstrument": {
+        "prefix": "reqOrderPaymentInstrument",
+        "body": [
+            "var OrderPaymentInstrument = require('dw/order/OrderPaymentInstrument');"
+        ],
+        "description": "Require Class OrderPaymentInstrument"
+    },
+    "Require Class OrderProcessStatusCodes": {
+        "prefix": "reqOrderProcessStatusCodes",
+        "body": [
+            "var OrderProcessStatusCodes = require('dw/order/OrderProcessStatusCodes');"
+        ],
+        "description": "Require Class OrderProcessStatusCodes"
+    },
+    "Require Class PaymentCard": {
+        "prefix": "reqPaymentCard",
+        "body": [
+            "var PaymentCard = require('dw/order/PaymentCard');"
+        ],
+        "description": "Require Class PaymentCard"
+    },
+    "Require Class PaymentInstrument": {
+        "prefix": "reqPaymentInstrument",
+        "body": [
+            "var PaymentInstrument = require('dw/order/PaymentInstrument');"
+        ],
+        "description": "Require Class PaymentInstrument"
+    },
+    "Require Class PaymentMethod": {
+        "prefix": "reqPaymentMethod",
+        "body": [
+            "var PaymentMethod = require('dw/order/PaymentMethod');"
+        ],
+        "description": "Require Class PaymentMethod"
+    },
+    "Require Class PaymentMgr": {
+        "prefix": "reqPaymentMgr",
+        "body": [
+            "var PaymentMgr = require('dw/order/PaymentMgr');"
+        ],
+        "description": "Require Class PaymentMgr"
+    },
+    "Require Class PaymentProcessor": {
+        "prefix": "reqPaymentProcessor",
+        "body": [
+            "var PaymentProcessor = require('dw/order/PaymentProcessor');"
+        ],
+        "description": "Require Class PaymentProcessor"
+    },
+    "Require Class PaymentStatusCodes": {
+        "prefix": "reqPaymentStatusCodes",
+        "body": [
+            "var PaymentStatusCodes = require('dw/order/PaymentStatusCodes');"
+        ],
+        "description": "Require Class PaymentStatusCodes"
+    },
+    "Require Class PaymentTransaction": {
+        "prefix": "reqPaymentTransaction",
+        "body": [
+            "var PaymentTransaction = require('dw/order/PaymentTransaction');"
+        ],
+        "description": "Require Class PaymentTransaction"
+    },
+    "Require Class PriceAdjustment": {
+        "prefix": "reqPriceAdjustment",
+        "body": [
+            "var PriceAdjustment = require('dw/order/PriceAdjustment');"
+        ],
+        "description": "Require Class PriceAdjustment"
+    },
+    "Require Class PriceAdjustmentLimitTypes": {
+        "prefix": "reqPriceAdjustmentLimitTypes",
+        "body": [
+            "var PriceAdjustmentLimitTypes = require('dw/order/PriceAdjustmentLimitTypes');"
+        ],
+        "description": "Require Class PriceAdjustmentLimitTypes"
+    },
+    "Require Class ProductLineItem": {
+        "prefix": "reqProductLineItem",
+        "body": [
+            "var ProductLineItem = require('dw/order/ProductLineItem');"
+        ],
+        "description": "Require Class ProductLineItem"
+    },
+    "Require Class ProductShippingCost": {
+        "prefix": "reqProductShippingCost",
+        "body": [
+            "var ProductShippingCost = require('dw/order/ProductShippingCost');"
+        ],
+        "description": "Require Class ProductShippingCost"
+    },
+    "Require Class ProductShippingLineItem": {
+        "prefix": "reqProductShippingLineItem",
+        "body": [
+            "var ProductShippingLineItem = require('dw/order/ProductShippingLineItem');"
+        ],
+        "description": "Require Class ProductShippingLineItem"
+    },
+    "Require Class ProductShippingModel": {
+        "prefix": "reqProductShippingModel",
+        "body": [
+            "var ProductShippingModel = require('dw/order/ProductShippingModel');"
+        ],
+        "description": "Require Class ProductShippingModel"
+    },
+    "Require Class Return": {
+        "prefix": "reqReturn",
+        "body": [
+            "var Return = require('dw/order/Return');"
+        ],
+        "description": "Require Class Return"
+    },
+    "Require Class ReturnCase": {
+        "prefix": "reqReturnCase",
+        "body": [
+            "var ReturnCase = require('dw/order/ReturnCase');"
+        ],
+        "description": "Require Class ReturnCase"
+    },
+    "Require Class ReturnCaseItem": {
+        "prefix": "reqReturnCaseItem",
+        "body": [
+            "var ReturnCaseItem = require('dw/order/ReturnCaseItem');"
+        ],
+        "description": "Require Class ReturnCaseItem"
+    },
+    "Require Class ReturnItem": {
+        "prefix": "reqReturnItem",
+        "body": [
+            "var ReturnItem = require('dw/order/ReturnItem');"
+        ],
+        "description": "Require Class ReturnItem"
+    },
+    "Require Class Shipment": {
+        "prefix": "reqShipment",
+        "body": [
+            "var Shipment = require('dw/order/Shipment');"
+        ],
+        "description": "Require Class Shipment"
+    },
+    "Require Class ShipmentShippingCost": {
+        "prefix": "reqShipmentShippingCost",
+        "body": [
+            "var ShipmentShippingCost = require('dw/order/ShipmentShippingCost');"
+        ],
+        "description": "Require Class ShipmentShippingCost"
+    },
+    "Require Class ShipmentShippingModel": {
+        "prefix": "reqShipmentShippingModel",
+        "body": [
+            "var ShipmentShippingModel = require('dw/order/ShipmentShippingModel');"
+        ],
+        "description": "Require Class ShipmentShippingModel"
+    },
+    "Require Class ShippingLineItem": {
+        "prefix": "reqShippingLineItem",
+        "body": [
+            "var ShippingLineItem = require('dw/order/ShippingLineItem');"
+        ],
+        "description": "Require Class ShippingLineItem"
+    },
+    "Require Class ShippingLocation": {
+        "prefix": "reqShippingLocation",
+        "body": [
+            "var ShippingLocation = require('dw/order/ShippingLocation');"
+        ],
+        "description": "Require Class ShippingLocation"
+    },
+    "Require Class ShippingMethod": {
+        "prefix": "reqShippingMethod",
+        "body": [
+            "var ShippingMethod = require('dw/order/ShippingMethod');"
+        ],
+        "description": "Require Class ShippingMethod"
+    },
+    "Require Class ShippingMgr": {
+        "prefix": "reqShippingMgr",
+        "body": [
+            "var ShippingMgr = require('dw/order/ShippingMgr');"
+        ],
+        "description": "Require Class ShippingMgr"
+    },
+    "Require Class ShippingOrder": {
+        "prefix": "reqShippingOrder",
+        "body": [
+            "var ShippingOrder = require('dw/order/ShippingOrder');"
+        ],
+        "description": "Require Class ShippingOrder"
+    },
+    "Require Class ShippingOrderItem": {
+        "prefix": "reqShippingOrderItem",
+        "body": [
+            "var ShippingOrderItem = require('dw/order/ShippingOrderItem');"
+        ],
+        "description": "Require Class ShippingOrderItem"
+    },
+    "Require Class SumItem": {
+        "prefix": "reqSumItem",
+        "body": [
+            "var SumItem = require('dw/order/SumItem');"
+        ],
+        "description": "Require Class SumItem"
+    },
+    "Require Class TaxGroup": {
+        "prefix": "reqTaxGroup",
+        "body": [
+            "var TaxGroup = require('dw/order/TaxGroup');"
+        ],
+        "description": "Require Class TaxGroup"
+    },
+    "Require Class TaxItem": {
+        "prefix": "reqTaxItem",
+        "body": [
+            "var TaxItem = require('dw/order/TaxItem');"
+        ],
+        "description": "Require Class TaxItem"
+    },
+    "Require Class TaxMgr": {
+        "prefix": "reqTaxMgr",
+        "body": [
+            "var TaxMgr = require('dw/order/TaxMgr');"
+        ],
+        "description": "Require Class TaxMgr"
+    },
+    "Require Class TrackingInfo": {
+        "prefix": "reqTrackingInfo",
+        "body": [
+            "var TrackingInfo = require('dw/order/TrackingInfo');"
+        ],
+        "description": "Require Class TrackingInfo"
+    },
+    "Require Class TrackingRef": {
+        "prefix": "reqTrackingRef",
+        "body": [
+            "var TrackingRef = require('dw/order/TrackingRef');"
+        ],
+        "description": "Require Class TrackingRef"
+    },
+    "Require Class SOAPUtil": {
+        "prefix": "reqSOAPUtil",
+        "body": [
+            "var SOAPUtil = require('dw/rpc/SOAPUtil');"
+        ],
+        "description": "Require Class SOAPUtil"
+    },
+    "Require Class Stub": {
+        "prefix": "reqStub",
+        "body": [
+            "var Stub = require('dw/rpc/Stub');"
+        ],
+        "description": "Require Class Stub"
+    },
+    "Require Class WebReference": {
+        "prefix": "reqWebReference",
+        "body": [
+            "var WebReference = require('dw/rpc/WebReference');"
+        ],
+        "description": "Require Class WebReference"
+    },
+    "Require Class SitemapFile": {
+        "prefix": "reqSitemapFile",
+        "body": [
+            "var SitemapFile = require('dw/sitemap/SitemapFile');"
+        ],
+        "description": "Require Class SitemapFile"
+    },
+    "Require Class SitemapMgr": {
+        "prefix": "reqSitemapMgr",
+        "body": [
+            "var SitemapMgr = require('dw/sitemap/SitemapMgr');"
+        ],
+        "description": "Require Class SitemapMgr"
+    },
+    "Require Class BrandSuggestions": {
+        "prefix": "reqBrandSuggestions",
+        "body": [
+            "var BrandSuggestions = require('dw/suggest/BrandSuggestions');"
+        ],
+        "description": "Require Class BrandSuggestions"
+    },
+    "Require Class CategorySuggestions": {
+        "prefix": "reqCategorySuggestions",
+        "body": [
+            "var CategorySuggestions = require('dw/suggest/CategorySuggestions');"
+        ],
+        "description": "Require Class CategorySuggestions"
+    },
+    "Require Class ContentSuggestions": {
+        "prefix": "reqContentSuggestions",
+        "body": [
+            "var ContentSuggestions = require('dw/suggest/ContentSuggestions');"
+        ],
+        "description": "Require Class ContentSuggestions"
+    },
+    "Require Class CustomSuggestions": {
+        "prefix": "reqCustomSuggestions",
+        "body": [
+            "var CustomSuggestions = require('dw/suggest/CustomSuggestions');"
+        ],
+        "description": "Require Class CustomSuggestions"
+    },
+    "Require Class ProductSuggestions": {
+        "prefix": "reqProductSuggestions",
+        "body": [
+            "var ProductSuggestions = require('dw/suggest/ProductSuggestions');"
+        ],
+        "description": "Require Class ProductSuggestions"
+    },
+    "Require Class SearchPhraseSuggestions": {
+        "prefix": "reqSearchPhraseSuggestions",
+        "body": [
+            "var SearchPhraseSuggestions = require('dw/suggest/SearchPhraseSuggestions');"
+        ],
+        "description": "Require Class SearchPhraseSuggestions"
+    },
+    "Require Class SuggestedCategory": {
+        "prefix": "reqSuggestedCategory",
+        "body": [
+            "var SuggestedCategory = require('dw/suggest/SuggestedCategory');"
+        ],
+        "description": "Require Class SuggestedCategory"
+    },
+    "Require Class SuggestedContent": {
+        "prefix": "reqSuggestedContent",
+        "body": [
+            "var SuggestedContent = require('dw/suggest/SuggestedContent');"
+        ],
+        "description": "Require Class SuggestedContent"
+    },
+    "Require Class SuggestedPhrase": {
+        "prefix": "reqSuggestedPhrase",
+        "body": [
+            "var SuggestedPhrase = require('dw/suggest/SuggestedPhrase');"
+        ],
+        "description": "Require Class SuggestedPhrase"
+    },
+    "Require Class SuggestedProduct": {
+        "prefix": "reqSuggestedProduct",
+        "body": [
+            "var SuggestedProduct = require('dw/suggest/SuggestedProduct');"
+        ],
+        "description": "Require Class SuggestedProduct"
+    },
+    "Require Class SuggestedTerm": {
+        "prefix": "reqSuggestedTerm",
+        "body": [
+            "var SuggestedTerm = require('dw/suggest/SuggestedTerm');"
+        ],
+        "description": "Require Class SuggestedTerm"
+    },
+    "Require Class SuggestedTerms": {
+        "prefix": "reqSuggestedTerms",
+        "body": [
+            "var SuggestedTerms = require('dw/suggest/SuggestedTerms');"
+        ],
+        "description": "Require Class SuggestedTerms"
+    },
+    "Require Class Suggestions": {
+        "prefix": "reqSuggestions",
+        "body": [
+            "var Suggestions = require('dw/suggest/Suggestions');"
+        ],
+        "description": "Require Class Suggestions"
+    },
+    "Require Class SuggestModel": {
+        "prefix": "reqSuggestModel",
+        "body": [
+            "var SuggestModel = require('dw/suggest/SuggestModel');"
+        ],
+        "description": "Require Class SuggestModel"
+    },
+    "Require Class FTPService": {
+        "prefix": "reqFTPService",
+        "body": [
+            "var FTPService = require('dw/svc/FTPService');"
+        ],
+        "description": "Require Class FTPService"
+    },
+    "Require Class FTPServiceDefinition": {
+        "prefix": "reqFTPServiceDefinition",
+        "body": [
+            "var FTPServiceDefinition = require('dw/svc/FTPServiceDefinition');"
+        ],
+        "description": "Require Class FTPServiceDefinition"
+    },
+    "Require Class HTTPFormService": {
+        "prefix": "reqHTTPFormService",
+        "body": [
+            "var HTTPFormService = require('dw/svc/HTTPFormService');"
+        ],
+        "description": "Require Class HTTPFormService"
+    },
+    "Require Class HTTPFormServiceDefinition": {
+        "prefix": "reqHTTPFormServiceDefinition",
+        "body": [
+            "var HTTPFormServiceDefinition = require('dw/svc/HTTPFormServiceDefinition');"
+        ],
+        "description": "Require Class HTTPFormServiceDefinition"
+    },
+    "Require Class HTTPService": {
+        "prefix": "reqHTTPService",
+        "body": [
+            "var HTTPService = require('dw/svc/HTTPService');"
+        ],
+        "description": "Require Class HTTPService"
+    },
+    "Require Class HTTPServiceDefinition": {
+        "prefix": "reqHTTPServiceDefinition",
+        "body": [
+            "var HTTPServiceDefinition = require('dw/svc/HTTPServiceDefinition');"
+        ],
+        "description": "Require Class HTTPServiceDefinition"
+    },
+    "Require Class LocalServiceRegistry": {
+        "prefix": "reqLocalServiceRegistry",
+        "body": [
+            "var LocalServiceRegistry = require('dw/svc/LocalServiceRegistry');"
+        ],
+        "description": "Require Class LocalServiceRegistry"
+    },
+    "Require Class Result": {
+        "prefix": "reqResult",
+        "body": [
+            "var Result = require('dw/svc/Result');"
+        ],
+        "description": "Require Class Result"
+    },
+    "Require Class Service": {
+        "prefix": "reqService",
+        "body": [
+            "var Service = require('dw/svc/Service');"
+        ],
+        "description": "Require Class Service"
+    },
+    "Require Class ServiceCallback": {
+        "prefix": "reqServiceCallback",
+        "body": [
+            "var ServiceCallback = require('dw/svc/ServiceCallback');"
+        ],
+        "description": "Require Class ServiceCallback"
+    },
+    "Require Class ServiceConfig": {
+        "prefix": "reqServiceConfig",
+        "body": [
+            "var ServiceConfig = require('dw/svc/ServiceConfig');"
+        ],
+        "description": "Require Class ServiceConfig"
+    },
+    "Require Class ServiceCredential": {
+        "prefix": "reqServiceCredential",
+        "body": [
+            "var ServiceCredential = require('dw/svc/ServiceCredential');"
+        ],
+        "description": "Require Class ServiceCredential"
+    },
+    "Require Class ServiceDefinition": {
+        "prefix": "reqServiceDefinition",
+        "body": [
+            "var ServiceDefinition = require('dw/svc/ServiceDefinition');"
+        ],
+        "description": "Require Class ServiceDefinition"
+    },
+    "Require Class ServiceProfile": {
+        "prefix": "reqServiceProfile",
+        "body": [
+            "var ServiceProfile = require('dw/svc/ServiceProfile');"
+        ],
+        "description": "Require Class ServiceProfile"
+    },
+    "Require Class ServiceRegistry": {
+        "prefix": "reqServiceRegistry",
+        "body": [
+            "var ServiceRegistry = require('dw/svc/ServiceRegistry');"
+        ],
+        "description": "Require Class ServiceRegistry"
+    },
+    "Require Class SOAPService": {
+        "prefix": "reqSOAPService",
+        "body": [
+            "var SOAPService = require('dw/svc/SOAPService');"
+        ],
+        "description": "Require Class SOAPService"
+    },
+    "Require Class SOAPServiceDefinition": {
+        "prefix": "reqSOAPServiceDefinition",
+        "body": [
+            "var SOAPServiceDefinition = require('dw/svc/SOAPServiceDefinition');"
+        ],
+        "description": "Require Class SOAPServiceDefinition"
+    },
+    "Require Class HookMgr": {
+        "prefix": "reqHookMgr",
+        "body": [
+            "var HookMgr = require('dw/system/HookMgr');"
+        ],
+        "description": "Require Class HookMgr"
+    },
+    "Require Class InternalObject": {
+        "prefix": "reqInternalObject",
+        "body": [
+            "var InternalObject = require('dw/system/InternalObject');"
+        ],
+        "description": "Require Class InternalObject"
+    },
+    "Require Class JobProcessMonitor": {
+        "prefix": "reqJobProcessMonitor",
+        "body": [
+            "var JobProcessMonitor = require('dw/system/JobProcessMonitor');"
+        ],
+        "description": "Require Class JobProcessMonitor"
+    },
+    "Require Class Log": {
+        "prefix": "reqLog",
+        "body": [
+            "var Log = require('dw/system/Log');"
+        ],
+        "description": "Require Class Log"
+    },
+    "Require Class Logger": {
+        "prefix": "reqLogger",
+        "body": [
+            "var Logger = require('dw/system/Logger');"
+        ],
+        "description": "Require Class Logger"
+    },
+    "Require Class LogNDC": {
+        "prefix": "reqLogNDC",
+        "body": [
+            "var LogNDC = require('dw/system/LogNDC');"
+        ],
+        "description": "Require Class LogNDC"
+    },
+    "Require Class OrganizationPreferences": {
+        "prefix": "reqOrganizationPreferences",
+        "body": [
+            "var OrganizationPreferences = require('dw/system/OrganizationPreferences');"
+        ],
+        "description": "Require Class OrganizationPreferences"
+    },
+    "Require Class Pipeline": {
+        "prefix": "reqPipeline",
+        "body": [
+            "var Pipeline = require('dw/system/Pipeline');"
+        ],
+        "description": "Require Class Pipeline"
+    },
+    "Require Class PipelineDictionary": {
+        "prefix": "reqPipelineDictionary",
+        "body": [
+            "var PipelineDictionary = require('dw/system/PipelineDictionary');"
+        ],
+        "description": "Require Class PipelineDictionary"
+    },
+    "Require Class Request": {
+        "prefix": "reqRequest",
+        "body": [
+            "var Request = require('dw/system/Request');"
+        ],
+        "description": "Require Class Request"
+    },
+    "Require Class RequestHooks": {
+        "prefix": "reqRequestHooks",
+        "body": [
+            "var RequestHooks = require('dw/system/RequestHooks');"
+        ],
+        "description": "Require Class RequestHooks"
+    },
+    "Require Class Response": {
+        "prefix": "reqResponse",
+        "body": [
+            "var Response = require('dw/system/Response');"
+        ],
+        "description": "Require Class Response"
+    },
+    "Require Class Session": {
+        "prefix": "reqSession",
+        "body": [
+            "var Session = require('dw/system/Session');"
+        ],
+        "description": "Require Class Session"
+    },
+    "Require Class Site": {
+        "prefix": "reqSite",
+        "body": [
+            "var Site = require('dw/system/Site');"
+        ],
+        "description": "Require Class Site"
+    },
+    "Require Class SitePreferences": {
+        "prefix": "reqSitePreferences",
+        "body": [
+            "var SitePreferences = require('dw/system/SitePreferences');"
+        ],
+        "description": "Require Class SitePreferences"
+    },
+    "Require Class Status": {
+        "prefix": "reqStatus",
+        "body": [
+            "var Status = require('dw/system/Status');"
+        ],
+        "description": "Require Class Status"
+    },
+    "Require Class StatusItem": {
+        "prefix": "reqStatusItem",
+        "body": [
+            "var StatusItem = require('dw/system/StatusItem');"
+        ],
+        "description": "Require Class StatusItem"
+    },
+    "Require Class System": {
+        "prefix": "reqSystem",
+        "body": [
+            "var System = require('dw/system/System');"
+        ],
+        "description": "Require Class System"
+    },
+    "Require Class Transaction": {
+        "prefix": "reqTransaction",
+        "body": [
+            "var Transaction = require('dw/system/Transaction');"
+        ],
+        "description": "Require Class Transaction"
+    },
+    "Require Class ISML": {
+        "prefix": "reqISML",
+        "body": [
+            "var ISML = require('dw/template/ISML');"
+        ],
+        "description": "Require Class ISML"
+    },
+    "Require Class Velocity": {
+        "prefix": "reqVelocity",
+        "body": [
+            "var Velocity = require('dw/template/Velocity');"
+        ],
+        "description": "Require Class Velocity"
+    },
+    "Require Class ArrayList": {
+        "prefix": "reqArrayList",
+        "body": [
+            "var ArrayList = require('dw/util/ArrayList');"
+        ],
+        "description": "Require Class ArrayList"
+    },
+    "Require Class Assert": {
+        "prefix": "reqAssert",
+        "body": [
+            "var Assert = require('dw/util/Assert');"
+        ],
+        "description": "Require Class Assert"
+    },
+    "Require Class BigInteger": {
+        "prefix": "reqBigInteger",
+        "body": [
+            "var BigInteger = require('dw/util/BigInteger');"
+        ],
+        "description": "Require Class BigInteger"
+    },
+    "Require Class Bytes": {
+        "prefix": "reqBytes",
+        "body": [
+            "var Bytes = require('dw/util/Bytes');"
+        ],
+        "description": "Require Class Bytes"
+    },
+    "Require Class Calendar": {
+        "prefix": "reqCalendar",
+        "body": [
+            "var Calendar = require('dw/util/Calendar');"
+        ],
+        "description": "Require Class Calendar"
+    },
+    "Require Class Collection": {
+        "prefix": "reqCollection",
+        "body": [
+            "var Collection = require('dw/util/Collection');"
+        ],
+        "description": "Require Class Collection"
+    },
+    "Require Class Currency": {
+        "prefix": "reqCurrency",
+        "body": [
+            "var Currency = require('dw/util/Currency');"
+        ],
+        "description": "Require Class Currency"
+    },
+    "Require Class DateUtils": {
+        "prefix": "reqDateUtils",
+        "body": [
+            "var DateUtils = require('dw/util/DateUtils');"
+        ],
+        "description": "Require Class DateUtils"
+    },
+    "Require Class Decimal": {
+        "prefix": "reqDecimal",
+        "body": [
+            "var Decimal = require('dw/util/Decimal');"
+        ],
+        "description": "Require Class Decimal"
+    },
+    "Require Class FilteringCollection": {
+        "prefix": "reqFilteringCollection",
+        "body": [
+            "var FilteringCollection = require('dw/util/FilteringCollection');"
+        ],
+        "description": "Require Class FilteringCollection"
+    },
+    "Require Class Geolocation": {
+        "prefix": "reqGeolocation",
+        "body": [
+            "var Geolocation = require('dw/util/Geolocation');"
+        ],
+        "description": "Require Class Geolocation"
+    },
+    "Require Class HashMap": {
+        "prefix": "reqHashMap",
+        "body": [
+            "var HashMap = require('dw/util/HashMap');"
+        ],
+        "description": "Require Class HashMap"
+    },
+    "Require Class HashSet": {
+        "prefix": "reqHashSet",
+        "body": [
+            "var HashSet = require('dw/util/HashSet');"
+        ],
+        "description": "Require Class HashSet"
+    },
+    "Require Class Iterator": {
+        "prefix": "reqIterator",
+        "body": [
+            "var Iterator = require('dw/util/Iterator');"
+        ],
+        "description": "Require Class Iterator"
+    },
+    "Require Class LinkedHashMap": {
+        "prefix": "reqLinkedHashMap",
+        "body": [
+            "var LinkedHashMap = require('dw/util/LinkedHashMap');"
+        ],
+        "description": "Require Class LinkedHashMap"
+    },
+    "Require Class LinkedHashSet": {
+        "prefix": "reqLinkedHashSet",
+        "body": [
+            "var LinkedHashSet = require('dw/util/LinkedHashSet');"
+        ],
+        "description": "Require Class LinkedHashSet"
+    },
+    "Require Class List": {
+        "prefix": "reqList",
+        "body": [
+            "var List = require('dw/util/List');"
+        ],
+        "description": "Require Class List"
+    },
+    "Require Class Locale": {
+        "prefix": "reqLocale",
+        "body": [
+            "var Locale = require('dw/util/Locale');"
+        ],
+        "description": "Require Class Locale"
+    },
+    "Require Class Map": {
+        "prefix": "reqMap",
+        "body": [
+            "var Map = require('dw/util/Map');"
+        ],
+        "description": "Require Class Map"
+    },
+    "Require Class MapEntry": {
+        "prefix": "reqMapEntry",
+        "body": [
+            "var MapEntry = require('dw/util/MapEntry');"
+        ],
+        "description": "Require Class MapEntry"
+    },
+    "Require Class MappingKey": {
+        "prefix": "reqMappingKey",
+        "body": [
+            "var MappingKey = require('dw/util/MappingKey');"
+        ],
+        "description": "Require Class MappingKey"
+    },
+    "Require Class MappingMgr": {
+        "prefix": "reqMappingMgr",
+        "body": [
+            "var MappingMgr = require('dw/util/MappingMgr');"
+        ],
+        "description": "Require Class MappingMgr"
+    },
+    "Require Class PropertyComparator": {
+        "prefix": "reqPropertyComparator",
+        "body": [
+            "var PropertyComparator = require('dw/util/PropertyComparator');"
+        ],
+        "description": "Require Class PropertyComparator"
+    },
+    "Require Class SecureEncoder": {
+        "prefix": "reqSecureEncoder",
+        "body": [
+            "var SecureEncoder = require('dw/util/SecureEncoder');"
+        ],
+        "description": "Require Class SecureEncoder"
+    },
+    "Require Class SecureFilter": {
+        "prefix": "reqSecureFilter",
+        "body": [
+            "var SecureFilter = require('dw/util/SecureFilter');"
+        ],
+        "description": "Require Class SecureFilter"
+    },
+    "Require Class SeekableIterator": {
+        "prefix": "reqSeekableIterator",
+        "body": [
+            "var SeekableIterator = require('dw/util/SeekableIterator');"
+        ],
+        "description": "Require Class SeekableIterator"
+    },
+    "Require Class Set": {
+        "prefix": "reqSet",
+        "body": [
+            "var Set = require('dw/util/Set');"
+        ],
+        "description": "Require Class Set"
+    },
+    "Require Class SortedMap": {
+        "prefix": "reqSortedMap",
+        "body": [
+            "var SortedMap = require('dw/util/SortedMap');"
+        ],
+        "description": "Require Class SortedMap"
+    },
+    "Require Class SortedSet": {
+        "prefix": "reqSortedSet",
+        "body": [
+            "var SortedSet = require('dw/util/SortedSet');"
+        ],
+        "description": "Require Class SortedSet"
+    },
+    "Require Class StringUtils": {
+        "prefix": "reqStringUtils",
+        "body": [
+            "var StringUtils = require('dw/util/StringUtils');"
+        ],
+        "description": "Require Class StringUtils"
+    },
+    "Require Class Template": {
+        "prefix": "reqTemplate",
+        "body": [
+            "var Template = require('dw/util/Template');"
+        ],
+        "description": "Require Class Template"
+    },
+    "Require Class UUIDUtils": {
+        "prefix": "reqUUIDUtils",
+        "body": [
+            "var UUIDUtils = require('dw/util/UUIDUtils');"
+        ],
+        "description": "Require Class UUIDUtils"
+    },
+    "Require Class EnumValue": {
+        "prefix": "reqEnumValue",
+        "body": [
+            "var EnumValue = require('dw/value/EnumValue');"
+        ],
+        "description": "Require Class EnumValue"
+    },
+    "Require Class MimeEncodedText": {
+        "prefix": "reqMimeEncodedText",
+        "body": [
+            "var MimeEncodedText = require('dw/value/MimeEncodedText');"
+        ],
+        "description": "Require Class MimeEncodedText"
+    },
+    "Require Class Money": {
+        "prefix": "reqMoney",
+        "body": [
+            "var Money = require('dw/value/Money');"
+        ],
+        "description": "Require Class Money"
+    },
+    "Require Class Quantity": {
+        "prefix": "reqQuantity",
+        "body": [
+            "var Quantity = require('dw/value/Quantity');"
+        ],
+        "description": "Require Class Quantity"
+    },
+    "Require Class ClickStream": {
+        "prefix": "reqClickStream",
+        "body": [
+            "var ClickStream = require('dw/web/ClickStream');"
+        ],
+        "description": "Require Class ClickStream"
+    },
+    "Require Class ClickStreamEntry": {
+        "prefix": "reqClickStreamEntry",
+        "body": [
+            "var ClickStreamEntry = require('dw/web/ClickStreamEntry');"
+        ],
+        "description": "Require Class ClickStreamEntry"
+    },
+    "Require Class Cookie": {
+        "prefix": "reqCookie",
+        "body": [
+            "var Cookie = require('dw/web/Cookie');"
+        ],
+        "description": "Require Class Cookie"
+    },
+    "Require Class Cookies": {
+        "prefix": "reqCookies",
+        "body": [
+            "var Cookies = require('dw/web/Cookies');"
+        ],
+        "description": "Require Class Cookies"
+    },
+    "Require Class CSRFProtection": {
+        "prefix": "reqCSRFProtection",
+        "body": [
+            "var CSRFProtection = require('dw/web/CSRFProtection');"
+        ],
+        "description": "Require Class CSRFProtection"
+    },
+    "Require Class Form": {
+        "prefix": "reqForm",
+        "body": [
+            "var Form = require('dw/web/Form');"
+        ],
+        "description": "Require Class Form"
+    },
+    "Require Class FormAction": {
+        "prefix": "reqFormAction",
+        "body": [
+            "var FormAction = require('dw/web/FormAction');"
+        ],
+        "description": "Require Class FormAction"
+    },
+    "Require Class FormElement": {
+        "prefix": "reqFormElement",
+        "body": [
+            "var FormElement = require('dw/web/FormElement');"
+        ],
+        "description": "Require Class FormElement"
+    },
+    "Require Class FormElementValidationResult": {
+        "prefix": "reqFormElementValidationResult",
+        "body": [
+            "var FormElementValidationResult = require('dw/web/FormElementValidationResult');"
+        ],
+        "description": "Require Class FormElementValidationResult"
+    },
+    "Require Class FormField": {
+        "prefix": "reqFormField",
+        "body": [
+            "var FormField = require('dw/web/FormField');"
+        ],
+        "description": "Require Class FormField"
+    },
+    "Require Class FormFieldOption": {
+        "prefix": "reqFormFieldOption",
+        "body": [
+            "var FormFieldOption = require('dw/web/FormFieldOption');"
+        ],
+        "description": "Require Class FormFieldOption"
+    },
+    "Require Class FormFieldOptions": {
+        "prefix": "reqFormFieldOptions",
+        "body": [
+            "var FormFieldOptions = require('dw/web/FormFieldOptions');"
+        ],
+        "description": "Require Class FormFieldOptions"
+    },
+    "Require Class FormGroup": {
+        "prefix": "reqFormGroup",
+        "body": [
+            "var FormGroup = require('dw/web/FormGroup');"
+        ],
+        "description": "Require Class FormGroup"
+    },
+    "Require Class FormList": {
+        "prefix": "reqFormList",
+        "body": [
+            "var FormList = require('dw/web/FormList');"
+        ],
+        "description": "Require Class FormList"
+    },
+    "Require Class FormListItem": {
+        "prefix": "reqFormListItem",
+        "body": [
+            "var FormListItem = require('dw/web/FormListItem');"
+        ],
+        "description": "Require Class FormListItem"
+    },
+    "Require Class Forms": {
+        "prefix": "reqForms",
+        "body": [
+            "var Forms = require('dw/web/Forms');"
+        ],
+        "description": "Require Class Forms"
+    },
+    "Require Class HttpParameter": {
+        "prefix": "reqHttpParameter",
+        "body": [
+            "var HttpParameter = require('dw/web/HttpParameter');"
+        ],
+        "description": "Require Class HttpParameter"
+    },
+    "Require Class HttpParameterMap": {
+        "prefix": "reqHttpParameterMap",
+        "body": [
+            "var HttpParameterMap = require('dw/web/HttpParameterMap');"
+        ],
+        "description": "Require Class HttpParameterMap"
+    },
+    "Require Class LoopIterator": {
+        "prefix": "reqLoopIterator",
+        "body": [
+            "var LoopIterator = require('dw/web/LoopIterator');"
+        ],
+        "description": "Require Class LoopIterator"
+    },
+    "Require Class PageMetaData": {
+        "prefix": "reqPageMetaData",
+        "body": [
+            "var PageMetaData = require('dw/web/PageMetaData');"
+        ],
+        "description": "Require Class PageMetaData"
+    },
+    "Require Class PageMetaTag": {
+        "prefix": "reqPageMetaTag",
+        "body": [
+            "var PageMetaTag = require('dw/web/PageMetaTag');"
+        ],
+        "description": "Require Class PageMetaTag"
+    },
+    "Require Class PagingModel": {
+        "prefix": "reqPagingModel",
+        "body": [
+            "var PagingModel = require('dw/web/PagingModel');"
+        ],
+        "description": "Require Class PagingModel"
+    },
+    "Require Class Resource": {
+        "prefix": "reqResource",
+        "body": [
+            "var Resource = require('dw/web/Resource');"
+        ],
+        "description": "Require Class Resource"
+    },
+    "Require Class URL": {
+        "prefix": "reqURL",
+        "body": [
+            "var URL = require('dw/web/URL');"
+        ],
+        "description": "Require Class URL"
+    },
+    "Require Class URLAction": {
+        "prefix": "reqURLAction",
+        "body": [
+            "var URLAction = require('dw/web/URLAction');"
+        ],
+        "description": "Require Class URLAction"
+    },
+    "Require Class URLParameter": {
+        "prefix": "reqURLParameter",
+        "body": [
+            "var URLParameter = require('dw/web/URLParameter');"
+        ],
+        "description": "Require Class URLParameter"
+    },
+    "Require Class URLRedirect": {
+        "prefix": "reqURLRedirect",
+        "body": [
+            "var URLRedirect = require('dw/web/URLRedirect');"
+        ],
+        "description": "Require Class URLRedirect"
+    },
+    "Require Class URLRedirectMgr": {
+        "prefix": "reqURLRedirectMgr",
+        "body": [
+            "var URLRedirectMgr = require('dw/web/URLRedirectMgr');"
+        ],
+        "description": "Require Class URLRedirectMgr"
+    },
+    "Require Class URLUtils": {
+        "prefix": "reqURLUtils",
+        "body": [
+            "var URLUtils = require('dw/web/URLUtils');"
+        ],
+        "description": "Require Class URLUtils"
+    },
+    "Require Class Port": {
+        "prefix": "reqPort",
+        "body": [
+            "var Port = require('dw/ws/Port');"
+        ],
+        "description": "Require Class Port"
+    },
+    "Require Class WebReference2": {
+        "prefix": "reqWebReference2",
+        "body": [
+            "var WebReference2 = require('dw/ws/WebReference2');"
+        ],
+        "description": "Require Class WebReference2"
+    },
+    "Require Class WSUtil": {
+        "prefix": "reqWSUtil",
+        "body": [
+            "var WSUtil = require('dw/ws/WSUtil');"
+        ],
+        "description": "Require Class WSUtil"
+    }
+}

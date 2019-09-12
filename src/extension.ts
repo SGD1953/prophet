@@ -1,56 +1,32 @@
 
 'use strict';
-import { Observable } from 'rxjs/Observable';
-import { join } from 'path';
-import { workspace, Disposable, ExtensionContext, commands, window, Uri, OutputChannel } from 'vscode';
+import { join, sep } from 'path';
+import { workspace, ExtensionContext, commands, window, Uri, WorkspaceConfiguration, debug, WorkspaceFolder, RelativePattern } from 'vscode';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind } from 'vscode-languageclient';
 import { CartridgesView } from './providers/CartridgesView';
 import { LogsView } from './providers/LogsView';
-import { CartridgeCreator } from './lib/CartridgeHelper';
+import { ControllersView } from './providers/ControllersView';
+
 import { existsSync } from 'fs';
-import { createServer } from 'http';
-import * as glob from 'glob';
+import { createServer, ServerResponse, IncomingMessage } from 'http';
+import Uploader from "./providers/Uploader";
+import { ProphetConfigurationProvider } from './providers/ConfigurationProvider';
+import { Subject, Observable } from 'rxjs';
+import { findFiles, getDWConfig, getCartridgesFolder } from './lib/FileHelper';
+import { SandboxFS } from './providers/SandboxFileSystemProvider';
 
-const initialConfigurations = {
-	version: '0.1.0',
-	configurations: [
-		{
-			'type': 'prophet',
-			'request': 'launch',
-			'name': 'Attach to Sandbox',
-			'hostname': '*.demandware.net',
-			'username': '<username>',
-			'password': '<password>',
-			'codeversion': 'version1',
-			'cartridgeroot': 'auto',
-			'workspaceroot': '${workspaceRoot}'
-		}
-	]
-};
 
-let uploaderSubscription;
-let outputChannel: OutputChannel;
-let cartridgesView: CartridgesView | undefined;
-let logsView: LogsView | undefined;
-
-export function activate(context: ExtensionContext) {
-	const configuration = workspace.getConfiguration('extension.prophet');
-	context.subscriptions.push(commands.registerCommand('extension.prophet.provideInitialConfigurations', () => {
-		return [
-			'// Use IntelliSense to learn about possible Prophet attributes.',
-			'// Hover to view descriptions of existing attributes.',
-			JSON.stringify(initialConfigurations, null, '\t')
-		].join('\n');
-	}));
-
-	outputChannel = window.createOutputChannel('Prophet Uploader');
-
-	context.subscriptions.push(outputChannel);
-
+/**
+ * Create the ISML language server with the proper parameters
+ *
+ * @param context the extension context
+ * @param configuration the extension configuration
+ */
+function createIsmlLanguageServer(context: ExtensionContext, configuration: WorkspaceConfiguration = workspace.getConfiguration('extension.prophet', null)) {
 	// The server is implemented in node
 	const serverModule = context.asAbsolutePath(join('out', 'server', 'ismlServer.js'));
 	// The debug options for the server
-	const debugOptions = { execArgv: ['--nolazy', '--debug=6004'] };
+	const debugOptions = { execArgv: ['--nolazy', '--inspect=6004'] };
 
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
@@ -58,21 +34,23 @@ export function activate(context: ExtensionContext) {
 		run: { module: serverModule, transport: TransportKind.ipc },
 		debug: { module: serverModule, transport: TransportKind.ipc, options: debugOptions }
 	};
-	const htmlConf = workspace.getConfiguration('html.format');
+	const htmlConf = workspace.getConfiguration('html.format', null);
 	// Options to control the language client
 	const clientOptions: LanguageClientOptions = {
 		// Register the server for plain text documents
-		documentSelector: (configuration.get('ismlServer.activateOn') as string[] || ['isml']).map(type => ({
+		documentSelector: (configuration.get('ismlServer.activateOn', ['isml'])).map(type => ({
 			language: type,
 			scheme: 'file'
 		})),
 		synchronize: {
 			// Synchronize the setting section 'languageServerExample' to the server
-			configurationSection: 'ismlLanguageServer',
+			configurationSection: 'extension.prophet',
 			// Notify the server about file changes to '.clientrc files contain in the workspace
-			// fileEvents: workspace.createFileSystemWatcher('**/*.isml')
+			// fileEvents: workspace.createFileSystemWatcher('**/*.isml'),
+			fileEvents: workspace.createFileSystemWatcher('**/.htmlhintrc')
 		},
 		initializationOptions: {
+			enableHtmlHint: configuration.get('htmlhint.enabled'),
 			formatParams: {
 				wrapLineLength: htmlConf.get('wrapLineLength'),
 				unformatted: htmlConf.get('unformatted'),
@@ -90,11 +68,13 @@ export function activate(context: ExtensionContext) {
 	};
 
 	// Create the language client and start the client.
-	const ismlLanguageServer = new LanguageClient('ismlLanguageServer', 'ISML Language Server', serverOptions, clientOptions);
-	const disposable = ismlLanguageServer.start();
+	const ismlLanguageClient = new LanguageClient('ismlLanguageServer', 'ISML Language Server', serverOptions, clientOptions);
 
-	ismlLanguageServer.onReady().then(() => {
-		ismlLanguageServer.onNotification('isml:selectfiles', (test) => {
+
+	//context.subscriptions.push(new SettingMonitor(ismlLanguageClient, 'extension.prophet.htmlhint.enabled').start());
+
+	ismlLanguageClient.onReady().then(() => {
+		ismlLanguageClient.onNotification('isml:selectfiles', (test) => {
 			const prophetConfiguration = workspace.getConfiguration('extension.prophet');
 			const cartPath = String(prophetConfiguration.get('cartridges.path'));
 
@@ -105,7 +85,7 @@ export function activate(context: ExtensionContext) {
 					(test.data || []).some(filename => filename.includes(cartridgeItem)));
 
 				if (cartridge) {
-					ismlLanguageServer.sendNotification('isml:selectedfile', test.data.find(
+					ismlLanguageClient.sendNotification('isml:selectedfile', test.data.find(
 						filename => filename.includes(cartridge)
 					));
 					return;
@@ -113,258 +93,304 @@ export function activate(context: ExtensionContext) {
 
 			}
 			window.showQuickPick(test.data).then(selected => {
-				ismlLanguageServer.sendNotification('isml:selectedfile', selected);
+				ismlLanguageClient.sendNotification('isml:selectedfile', selected);
 			}, err => {
-				ismlLanguageServer.sendNotification('isml:selectedfile', undefined);
+				ismlLanguageClient.sendNotification('isml:selectedfile', undefined);
 			});
 		});
+		ismlLanguageClient.onNotification('find:files', ({ searchID, workspacePath, pattern }) => {
+			workspace.findFiles(
+				new RelativePattern(Uri.parse(workspacePath).fsPath, pattern)
+			).then(result => {
+				ismlLanguageClient.sendNotification('find:filesFound', { searchID, result: (result || []).map(uri => uri.fsPath) });
+			})
+		});
+	}).catch(err => {
+		window.showErrorMessage(JSON.stringify(err));
 	});
 
-	// Push the disposable to the context's subscriptions so that the
-	// client can be deactivated on extension deactivation
-	context.subscriptions.push(disposable);
+	return ismlLanguageClient;
+}
 
-	if (workspace.rootPath) {
-		/// open files from browser
-		const server = createServer(function (req, res) {
-			res.writeHead(200, { 'Content-Type': 'text/plain' });
-			res.end('ok');
+function getWorkspaceFolders$$(context: ExtensionContext): Observable<Observable<WorkspaceFolder>> {
+	return new Observable(observer => {
 
-			if (req.url && req.url.includes('/target') && workspace.rootPath) {
-				const reqUrl = req.url.split('/target=')[1].split('&')[0]; // fixme
+		function createObservableWorkspace(workspaceFolder: WorkspaceFolder) {
+			return new Observable<WorkspaceFolder>(wrkObserver => {
+				const wrkListener = workspace.onDidChangeWorkspaceFolders(event => {
+					try {
+						event.removed && event.removed.forEach(removedWrk => {
+							if (removedWrk.uri.fsPath === workspaceFolder.uri.fsPath) {
+								wrkObserver.complete();
+								wrkListener.dispose();
+							}
+						});
+					} catch (e) {
+						wrkObserver.error(e);
+					}
+				});
+				wrkObserver.next(workspaceFolder)
+				return () => {
+					wrkListener.dispose();
+				}
+			});
+		}
 
-				const filePaths = [
-					join(workspace.rootPath, ...reqUrl.split('/')),
-					join(workspace.rootPath, 'cartridges', ...reqUrl.split('/')),
-					join(workspace.rootPath, ...reqUrl.split('/')).replace('.js', '.ds'),
-					join(workspace.rootPath, 'cartridges', ...reqUrl.split('/')).replace('.js', '.ds')
-				];
+		const listener = workspace.onDidChangeWorkspaceFolders(event => {
+			event.added.forEach(addWrk => {
+				if (addWrk.uri.scheme === 'file') {
+					observer.next(createObservableWorkspace(addWrk));
+				}
+			});
+		});
 
-				const filePath = filePaths.find(existsSync);
+		if (workspace.workspaceFolders) {
+			workspace.workspaceFolders.forEach(addWrk => {
+				if (addWrk.uri.scheme === 'file') {
+					observer.next(createObservableWorkspace(addWrk));
+				}
+			});
+		}
 
-				if (filePath) {
-					commands.executeCommand('vscode.open', Uri.file(filePath)).then(() => {
-						// DO NOTHING
-					}, err => {
-						window.showErrorMessage(err);
+		context.subscriptions.push({
+			dispose() {
+				observer.complete();
+				listener.dispose();
+			}
+		})
+		return () => {
+			listener.dispose();
+		};
+	});
+}
+
+export function activate(context: ExtensionContext) {
+
+
+	context.subscriptions.push(
+		commands.registerCommand('extension.prophet.command.open.documentation', () => {
+			commands.executeCommand('vscode.open', Uri.parse('https://documentation.demandware.com'));
+		})
+	);
+	context.subscriptions.push(
+		commands.registerCommand('extension.prophet.command.open.xchange', () => {
+			commands.executeCommand('vscode.open', Uri.parse('https://xchange.demandware.com'));
+		})
+	);
+
+	// register a configuration provider
+	context.subscriptions.push(
+		debug.registerDebugConfigurationProvider(
+			'prophet',
+			new ProphetConfigurationProvider()
+		)
+	);
+
+
+	initDebugger();
+
+	const workspaceFolders$$ = getWorkspaceFolders$$(context);
+
+	// const configuration = workspace.getConfiguration('extension.prophet');
+	// var ismlLanguageServer = createIsmlLanguageServer(context, configuration);
+	// context.subscriptions.push(ismlLanguageServer.start());
+
+	function subscribe2disposable($: Observable<any>) {
+		const subscr = $.subscribe(() => { }, err => {
+			window.showErrorMessage(JSON.stringify(err));
+		});
+
+		context.subscriptions.push({
+			dispose() {
+				subscr.unsubscribe();
+			}
+		});
+
+	}
+
+	/// open files from browser
+	subscribe2disposable(initializeToolkitActions().takeUntil(workspaceFolders$$.filter(() => false)));
+
+	/// uploader
+	Uploader.initialize(context, workspaceFolders$$);
+
+	// CartridgesView
+	CartridgesView.initialize(context);
+	ControllersView.initialize(context);
+
+	const dwConfig$$ = workspaceFolders$$.map(workspaceFolder$ => {
+		const end$ = new Subject();
+		return workspaceFolder$
+			.do(() => { }, undefined, () => { end$.next(); end$.complete() })
+			.flatMap(workspaceFolder => {
+				return findFiles(new RelativePattern(workspaceFolder, '**/dw.json'), 1)
+			}).takeUntil(end$);
+	});
+
+	subscribe2disposable(LogsView.initialize(commands, context, dwConfig$$).mergeAll());
+
+	context.subscriptions.push(createIsmlLanguageServer(context).start());
+
+	const excludedMasks = workspace.getConfiguration('files', null).get<{}>('exclude') || {};
+
+	const ignoreProjects = Object.keys(excludedMasks || {})
+		.some(excludedMask => excludedMask.includes('.project') && excludedMasks && excludedMasks[excludedMask]);
+
+	if (ignoreProjects) {
+		window.showErrorMessage('Your `files.exclude` excludes `.project`. Cartridge detection may not work properly');
+	}
+	// workspace.registerSearchProvider();
+	initFS(context);
+}
+
+function initFS(context : ExtensionContext) {
+
+	if (!workspace.workspaceFolders) {
+		return;
+	}
+	const fileWorkspaceFolders = workspace.workspaceFolders.filter(workspaceFolder => workspaceFolder.uri.scheme === 'file');
+
+	getDWConfig(fileWorkspaceFolders).then(options => {
+
+		let sandboxFS = new SandboxFS(options);
+		context.subscriptions.push(workspace.registerFileSystemProvider(SandboxFS.SCHEME, sandboxFS, { isCaseSensitive: true }));
+
+		if (workspace.workspaceFolders) {
+			if (!workspace.workspaceFolders.some(workspaceFolder => workspaceFolder.uri.scheme.toLowerCase() === SandboxFS.SCHEME)) {
+				const extConf = workspace.getConfiguration('extension.prophet');
+				if (extConf.get('sandbox.filesystem.enabled')) {
+					workspace.updateWorkspaceFolders(0, 0, {
+						uri: Uri.parse(SandboxFS.SCHEME +  '://current-sandbox'),
+						name: "Sandbox - FileSystem",
 					});
-				} else {
-					window.showWarningMessage(`Unable to find '${reqUrl}'`);
 				}
 			}
+		}
+	});
+}
 
-		});
+function initDebugger() {
+	debug.onDidReceiveDebugSessionCustomEvent(event => {
+		if (event.event === 'prophet.getdebugger.config' && workspace.workspaceFolders) {
+			getDWConfig(workspace.workspaceFolders)
+				.then(configData => {
+					if (workspace.workspaceFolders) {
+						const fileWorkspaceFolders = workspace.workspaceFolders.filter(workspaceFolder => workspaceFolder.uri.scheme === 'file');
+
+						return Promise.all(fileWorkspaceFolders.map(
+							workspaceFolder => getCartridgesFolder(workspaceFolder).reduce((acc, r) => {acc.push(r); return acc }, []).toPromise()
+						)).then(projects => {
+
+							var flatten = ([] as string[]).concat(...projects);
+
+							if (flatten.length) {
+								return event.session.customRequest('DebuggerConfig', {
+									config: configData,
+									cartridges: flatten
+								});
+							} else {
+								return Promise.reject('Unable get cartridges list');
+							}
+						});
+					} else {
+						return Promise.reject('Unable detect workspaces');
+					}
+				}).catch(err => {
+					window.showErrorMessage(JSON.stringify(err));
+				});
+		}
+	});
+}
+
+interface IServerRequest {
+	req: IncomingMessage,
+	res: ServerResponse
+}
+
+
+function initializeToolkitActions() {
+	return new Observable<IServerRequest>(observeer => {
+		const server = createServer((req, res) => { observeer.next({ req, res }) });
 		server.once('error', err => {
 			if (err instanceof Error) {
-				window.showWarningMessage(
-					`Unable open port for browsers files, probably other instance or Digital Studio is opened. Error: ${err.message}`
-				);
-
+				window.showWarningMessage(`Unable open port for browsers files, probably other instance or Digital Studio is opened. Error: ${err.message}`);
 				server.close();
 			}
-		});
-
-		server.once('listening', () => {
-			context.subscriptions.push(
-				new Disposable(() => {
-					server.close();
-				})
-			);
+			observeer.error(err);
 		});
 
 		server.listen(60606);
-		const rootPath = workspace.rootPath;
 
-		let prevState;
-		context.subscriptions.push(workspace.onDidChangeConfiguration(() => {
-			const prophetConfiguration = workspace.getConfiguration('extension.prophet');
-			const isProphetUploadEnabled = prophetConfiguration.get('upload.enabled');
-
-			if (isProphetUploadEnabled !== prevState) {
-				prevState = isProphetUploadEnabled;
-				if (isProphetUploadEnabled) {
-					loadUploaderConfig(rootPath, context);
-				} else {
-					if (uploaderSubscription) {
-						outputChannel.appendLine(`Stopping`);
-						uploaderSubscription.unsubscribe();
-						uploaderSubscription = null;
-					}
-				}
-			}
-
-		}));
-
-		context.subscriptions.push(commands.registerCommand('extension.prophet.command.enable.upload', () => {
-			loadUploaderConfig(rootPath, context);
-		}));
-		context.subscriptions.push(commands.registerCommand('extension.prophet.command.clean.upload', () => {
-			loadUploaderConfig(rootPath, context);
-		}));
-		context.subscriptions.push(commands.registerCommand('extension.prophet.command.disable.upload', () => {
-			if (uploaderSubscription) {
-				outputChannel.appendLine(`Stopping`);
-				uploaderSubscription.unsubscribe();
-				uploaderSubscription = null;
-			}
-		}));
-
-		context.subscriptions.push(commands.registerCommand('extension.prophet.command.refresh.cartridges', () => {
-			if (cartridgesView) {
-				cartridgesView.refresh(
-					((window.activeTextEditor) ? window.activeTextEditor.document.fileName : undefined));
-			}
-		}));
-
-		context.subscriptions.push(commands.registerCommand('extension.prophet.command.create.cartridge', () => {
-			const folderOptions = {
-				prompt: 'Folder: ',
-				placeHolder: 'Folder to create cartridge in (leave empty if none)'
-			};
-
-			const cartridgeOptions = {
-				prompt: 'Cartridgename: ',
-				placeHolder: 'your_cartridge_id'
-			};
-
-			window.showInputBox(folderOptions).then(folderValue => {
-				window.showInputBox(cartridgeOptions).then(value => {
-					if (!value) { return; }
-					if (!folderValue) { folderValue = ''; }
-
-					new CartridgeCreator(rootPath).createCartridge(value.trim().replace(' ', '_'), folderValue.trim());
-
-					if (cartridgesView) {
-						cartridgesView.refresh((window.activeTextEditor) ? window.activeTextEditor.document.fileName : undefined);
-					}
-
-					if (isUploadEnabled) {
-						loadUploaderConfig(rootPath, context);
-					}
-				});
-			});
-		}));
-
-		context.subscriptions.push(commands.registerCommand('extension.prophet.command.create.folder', (cartridgeDirectoryItem) => {
-			if (cartridgesView) {
-				cartridgesView.createDirectory(cartridgeDirectoryItem);
-			}
-		}));
-
-		context.subscriptions.push(commands.registerCommand('extension.prophet.command.create.file', (cartridgeFileItem) => {
-			if (cartridgesView) {
-				cartridgesView.createFile(cartridgeFileItem);
-			}
-		}));
-
-		const isUploadEnabled = configuration.get('upload.enabled');
-		prevState = isUploadEnabled;
-		if (isUploadEnabled) {
-			loadUploaderConfig(rootPath, context);
-		} else {
-			outputChannel.appendLine('Uploader disabled in configuration');
+		return () => {
+			server.close();
 		}
+	}).flatMap(({ req, res }) => {
+		if (workspace.workspaceFolders && workspace.workspaceFolders.length) {
+			const fileWorkspaceFolders = workspace.workspaceFolders.filter(workspaceFolder => workspaceFolder.uri.scheme === 'file');
+			const cartridgesFolders = fileWorkspaceFolders
+				.map(workspaceFolder => getCartridgesFolder(workspaceFolder));
 
-		// add views
-		cartridgesView = new CartridgesView(rootPath, (window.activeTextEditor) ? window.activeTextEditor.document.fileName : undefined);
+			return Observable.merge(...cartridgesFolders)
+				.reduce((acc, val) => {
+					acc.add(val);
+					return acc;
+				}, new Set<string>())
+				.flatMap(cartridges => {
+					res.writeHead(200, { 'Content-Type': 'text/plain' });
+					res.end('ok');
+					if (req.url && req.url.includes('/target')) {
+						const reqUrl = req.url.split('/target=')[1].split('&')[0]; // fixme
 
-		context.subscriptions.push(
-			window.registerTreeDataProvider('cartridgesView', cartridgesView)
-		);
-	}
+						const clientFilePath = convertDebuggerPathToClient(reqUrl, Array.from(cartridges));
+
+						if (clientFilePath) {
+							const filePaths = [
+								clientFilePath,
+								clientFilePath.replace('.js', '.ds'),
+							];
+
+							const filePath = filePaths.find(existsSync);
+							if (filePath) {
+								commands.executeCommand('vscode.open', Uri.file(filePath)).then(() => {
+									// DO NOTHING
+								}, err => {
+									window.showErrorMessage(err);
+								});
+							} else {
+								window.showWarningMessage(`Unable to find '${reqUrl}'`);
+							}
+						} else {
+							window.showWarningMessage(`Unable to find '${reqUrl}'.`);
+						}
+					}
+
+					return Observable.of(1);
+				});
+		} else {
+			return Observable.empty();
+		}
+	});
 }
 
-function loadUploaderConfig(rootPath: string, context: ExtensionContext) {
-	if (uploaderSubscription) {
-		uploaderSubscription.unsubscribe();
-		uploaderSubscription = null;
-		outputChannel.appendLine(`Restarting`);
+function convertDebuggerPathToClient(this: void, debuggerPath: string, cartridges: string[]): string {
+	debuggerPath = debuggerPath.substr(1);
+	const debuggerSep = debuggerPath.split('/');
+	const cartridgeName = debuggerSep.shift() || '';
+
+	const cartPath = cartridges.find(cartridge => cartridge.endsWith(cartridgeName));
+
+	if (cartPath) {
+		const tmp = join(cartPath, debuggerSep.join(sep));
+		return tmp;
 	} else {
-		outputChannel.appendLine(`Starting...`);
+		window.showErrorMessage("Unable match cartridge");
+		return '';
 	}
 
-	uploaderSubscription = Observable.create(observer => {
-		let subscribtion;
-
-		glob('**/dw.json', {
-			cwd: rootPath,
-			root: rootPath,
-			nodir: true,
-			follow: false,
-			ignore: ['**/node_modules/**', '**/.git/**']
-		}, (error, files: string[]) => {
-			if (error) {
-				observer.error(error);
-			} else if (files.length && workspace.rootPath) {
-				import('./server/uploadServer').then(function (uploadServer) {
-					const configFilename = join(rootPath, files.shift() || '');
-					outputChannel.appendLine(`Using config file '${configFilename}'`);
-
-					subscribtion = uploadServer.init(configFilename, outputChannel)
-						.subscribe(
-						() => {
-							// reset counter to zero if success
-						},
-						err => {
-							observer.error(err);
-						},
-						() => {
-							observer.complete();
-						}
-						);
-
-					if (!logsView) {
-						uploadServer.readConfigFile(configFilename).flatMap(config => {
-							return uploadServer.getWebDavClient(config, outputChannel, rootPath);
-						}).subscribe(webdav => {
-							logsView = new LogsView(webdav);
-							context.subscriptions.push(
-								window.registerTreeDataProvider('dwLogsView', logsView)
-							);
-
-							context.subscriptions.push(commands.registerCommand('extension.prophet.command.refresh.logview', () => {
-								if (logsView) {
-									logsView.refresh();
-								}
-							}));
-
-							context.subscriptions.push(commands.registerCommand('extension.prophet.command.log.open', (filename) => {
-								if (logsView) {
-									logsView.openLog(filename);
-								}
-							}));
-
-							context.subscriptions.push(commands.registerCommand('extension.prophet.command.clean.log', (logItem) => {
-								if (logsView) {
-									logsView.cleanLog(logItem);
-								}
-							}));
-						});
-					}
-				});
-
-			} else {
-				observer.error('Unable to find "dw.json". Upload cartridges disabled.');
-			}
-		});
-		return () => {
-			subscribtion.unsubscribe();
-		};
-	}).subscribe(
-		() => {
-			// DO NOTHING
-		},
-		err => {
-			outputChannel.show();
-			outputChannel.appendLine(`Error: ${err}`);
-		},
-		() => {
-			outputChannel.show();
-			outputChannel.appendLine(`Error: completed!`);
-		}
-	);
 }
 
 export function deactivate() {
 	// nothing to do
 }
+
+

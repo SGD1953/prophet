@@ -1,22 +1,61 @@
 
-import * as request from 'request';
 import { relative, sep, resolve, join } from 'path';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/mergeMap';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/filter';
+import { Observable } from 'rxjs';
+import { createReadStream, unlink, ReadStream } from 'fs';
+import { finished } from 'stream';
+import { workspace, CancellationTokenSource, RelativePattern } from 'vscode';
+
+class WebDavError extends Error {
+	statusCode: number
+}
+
+function request$(options) {
+	//fixme: refactor to use https module
+	return Observable.fromPromise(import('request')).flatMap(request => {
+		return new Observable<string>(observer => {
+			const req = request(options, (err, res, body) => {
+				if (err) {
+					observer.error(err);
+				} else if (res.statusCode >= 400) {
+					const err = new WebDavError([res.statusMessage, body, JSON.stringify(res)].join('\n'));
+					err.statusCode = res.statusCode;
+
+					observer.error(err);
+				} else {
+					observer.next(body);
+					observer.complete();
+				}
+			});
+
+			return () => {
+				req.destroy();
+			};
+		});
+	})
+}
 
 export interface DavOptions {
+	cartridge: string[]
+	configFilename?: string,
 	hostname: string,
 	username: string,
 	password: string,
 	version: string,
 	root: string,
-	debug?: boolean
+	debug?: boolean,
+	cartrigeResolution: 'ask' | 'leave' | 'remove'
 }
 
+function getMatches(string: string, regex: RegExp, index = 1) {
+	var matches: string[] = [];
+	var match: RegExpExecArray | null;
+	while (match = regex.exec(string)) {
+		matches.push(match[index]);
+	}
+	return matches;
+}
 export default class WebDav {
+	static WebDavError = WebDavError;
 	config: DavOptions;
 	log: (...string) => any;
 	folder: string = 'Cartridges';
@@ -33,30 +72,15 @@ export default class WebDav {
 	dirList(filePath = '.', root = this.config.root): Observable<string> {
 		const uriPath = relative(root, filePath);
 
-		return Observable.create(observer => {
-			let req = request(Object.assign(this.getOptions(), {
+		return request$(
+			Object.assign(this.getOptions(), {
 				uri: '/' + uriPath,
 				headers: {
 					Depth: 1
 				},
 				method: 'PROPFIND'
-			}), (err, res, body) => {
-				if (err) {
-					observer.error(err);
-				} else if (res.statusCode >= 400) {
-					observer.error(new Error(res.statusMessage));
-				} else {
-					observer.next(body);
-				}
-
-				observer.complete();
-			});
-
-			return () => {
-				req.destroy();
-				req = null;
-			};
-		});
+			})
+		);
 	}
 	getOptions() {
 		return {
@@ -69,100 +93,59 @@ export default class WebDav {
 			strictSSL: false
 		};
 	}
-	makeRequest(options) {
-		return Observable.create(observer => {
-			this.log('request', options, this.getOptions());
-
-			let req = request(
-				Object.assign(this.getOptions(), options),
-				(err, res, body) => {
-					this.log('response', body);
-					if (err) {
-						observer.error(err);
-					} else if (res.statusCode >= 400) {
-						observer.error(new Error(res.statusMessage));
-					} else {
-						observer.next(body);
-					}
-
-					observer.complete();
-				}
-			);
-			return () => {
-				req.destroy();
-				req = null;
-			};
-		});
+	makeRequest(options): Observable<string> {
+		this.log('request', options, this.getOptions());
+		return request$(Object.assign(this.getOptions(), options));
 	}
-	postBody(uriPath : string, bodyOfFile: string) {
+	postBody(uriPath: string, bodyOfFile: string): Observable<string> {
 		this.log('postBody', uriPath);
 
-		return Observable.create(observer => {
-			let req = request(Object.assign(this.getOptions(), {
-				uri: '/' + uriPath,
-				method: 'PUT',
-				form: bodyOfFile
-			}), (err, res, body) => {
-				this.log('postBody-response', uriPath, body);
-				if (err) {
-					observer.error(err);
-				} else if (res.statusCode >= 400) {
-					observer.error(new Error(res.statusMessage));
-				} else {
-					observer.next(body);
-				}
-
-				observer.complete();
-			});
-			return () => {
-				req.destroy()
-				req = null;
-			};
+		return request$(Object.assign(this.getOptions(), {
+			uri: '/' + uriPath,
+			method: 'PUT',
+			form: bodyOfFile
+		})).do(body => {
+			this.log('postBody-response', uriPath, body);
 		});
 	}
-	post(filePath, root = this.config.root) {
-		const uriPath = relative(root, filePath),
-			fs = require('fs');
+	post(filePath: string, root: string = this.config.root): Observable<string> {
+		const uriPath = relative(root, filePath);
 
 		this.log('post', uriPath);
-		return Observable.create(observer => {
-			let req = request(Object.assign(this.getOptions(), {
-				uri: '/' + uriPath,
-				method: 'PUT'
-			}), (err, res, body) => {
-				this.log('post-response', uriPath, body);
-				if (err) {
-					observer.error(err);
-				} else if (res.statusCode >= 400) {
-					observer.error(new Error(res.statusMessage));
-				} else {
-					observer.next(body);
-				}
 
-				observer.complete();
-			});
-
-			let outputStream = fs.createReadStream(filePath);
-
-			outputStream.once('error', error => {
-				observer.error(error);
-			});
-
-			outputStream.pipe(req);
-
-			return () => {
-				if (outputStream) {
-					outputStream.unpipe(req);
-					outputStream.close();
-					req.end();
-				}
-				req.destroy()
-				req = null;
-				outputStream = null;
-			};
+		return request$(Object.assign(this.getOptions(), {
+			uri: '/' + uriPath,
+			method: 'PUT',
+			body: createReadStream(filePath)
+		})).do(body => {
+			this.log('post-response', uriPath, body);
 		});
 	}
-	unzip(filePath, root = this.config.root) {
+	postStream(filePath: string, stream: ReadStream, root: string = this.config.root): Observable<string> {
+		const uriPath = relative(root, filePath);
+
+		this.log('post', uriPath);
+
+		return request$(Object.assign(this.getOptions(), {
+			uri: '/' + uriPath,
+			method: 'PUT',
+			body: stream
+		})).do(body => {
+			this.log('post-response-stream', uriPath, body);
+		});
+	}
+	mkdir(filePath: string, root: string = this.config.root): Observable<string> {
+		const uriPath = relative(root, filePath);
+		this.log('mkdir', uriPath);
+
+		return request$(Object.assign(this.getOptions(), {
+			uri: '/' + uriPath,
+			method: 'MKCOL'
+		})).do(body => {
+			this.log('mkcol-response', uriPath, body);
+		});
+	}
+	unzip(filePath: string, root = this.config.root): Observable<string> {
 		const uriPath = relative(root, filePath);
 
 		this.log('unzip', uriPath);
@@ -176,7 +159,7 @@ export default class WebDav {
 			this.log('unzip-response', data);
 		});
 	}
-	get(filePath, root = this.config.root): Observable<string> {
+	get(filePath: string, root = this.config.root): Observable<string> {
 		const uriPath = relative(root, filePath);
 
 		this.log('get', uriPath);
@@ -187,7 +170,7 @@ export default class WebDav {
 			this.log('get-response', data);
 		});
 	}
-	getActiveCodeVersion() {
+	getActiveCodeVersion(): Observable<string> {
 		return this.makeRequest({
 			uri: '/../.version',
 			method: 'GET'
@@ -226,205 +209,148 @@ export default class WebDav {
 			return activeVersion;
 		});
 	}
-	postAndUnzip(filePath) {
+	postAndUnzip(filePath: string) {
 		return this.post(filePath).flatMap(() => this.unzip(filePath));
 	}
-	delete(filePath, optionalRoot) {
-		const uriPath = relative(optionalRoot || this.config.root, filePath);
+	cleanUpCodeVersion(notify: (...string) => void, ask: (sb: string[], listc: string[]) => Promise<string[]>, list: string[]) {
 
-		return Observable.create(observer => {
-			this.log('delete', uriPath);
-			let req = request(Object.assign(this.getOptions(), {
-				uri: '/' + uriPath,
-				method: 'DELETE'
-			}), (err, res, body) => {
-				this.log('delete-response', uriPath, body);
-				if (err) {
-					observer.error(err);
-				} else if (res.statusCode >= 400 && res.statusCode !== 404) {
-					// it's ok to ignore 404 error if the file is not found
-					observer.error(new Error(res.statusMessage));
-				} else {
-					observer.next(body);
-				}
+		return this.dirList('/', '/').flatMap((res: string) => {
+			const matches = getMatches(res, /<displayname>(.+?)<\/displayname>/g);
+			const filteredPath = matches.filter(match => match && match !== this.config.version);
 
-				observer.complete();
-			});
+			return Observable.fromPromise(ask(filteredPath, list))
+				.flatMap((cartridgesToRemove) => {
+					if (cartridgesToRemove.length) {
+						const delete$ = cartridgesToRemove.map(path => this.delete('/' + path, '/').do(() => { notify(`Deleted ${path}`) }));
 
-			return () => {
-				req.destroy()
-				req = null;
-			};
+						return Observable.forkJoin(...delete$);
+					} else {
+						return Observable.of(['']);
+					}
+				})
 		});
 	}
-	getFileList(pathToCartridgesDir, options) {
-		const walk = require('walk');
-		const { isCartridge = false } = options;
-		const { isDirectory = false } = options;
-		const { ignoreList = ['node_modules', '\\.git'] } = options;
-		const processingFolder = pathToCartridgesDir.split(sep).pop();
+	delete(filePath: string, optionalRoot: string = this.config.root): Observable<string> {
+		const uriPath = relative(optionalRoot, filePath);
 
-		return Observable.create(observer => {
-
-			let walker = walk.walk(pathToCartridgesDir, {
-				filters: ignoreList,
-				followLinks: false
-			});
-
-			function dispose() {
-				if (walker) {
-					walker.removeAllListeners();
-					walker.pause();
-					walker = null;
-				}
-			}
-
-			/**
-			 * When we have an empty Directory(eg, newly created cartridge), walking on "file" doesn't work.
-			 * So, we walk on "directories" and call function "addEmptyDirectory" to add
-			 * EMPTY DIRS to ZIP
-			 */
-			if (isDirectory) {
-				walker.on('directories', function (root, stats, next) {
-					stats.forEach(function (stat) {
-						const toFile = relative(isCartridge ?
-							pathToCartridgesDir.replace(processingFolder, '') :
-							pathToCartridgesDir, resolve(root, stat.name));
-
-						observer.next([toFile])
-					});
-					next();
-				});
+		this.log('delete', uriPath);
+		return request$(Object.assign(this.getOptions(), {
+			uri: '/' + uriPath,
+			method: 'DELETE'
+		})).do(body => {
+			this.log('delete-response', uriPath, body);
+		}).catch(err => {
+			// it's ok to ignore 404 error if the file is not found
+			if (err && err.statusCode === 404) {
+				return Observable.of(err);
 			} else {
-				walker.on('file', (root, fileStat, next) => {
-					const file = resolve(root, fileStat.name);
-					const toFile = relative(isCartridge ?
-						pathToCartridgesDir.replace(processingFolder, '') :
-						pathToCartridgesDir, resolve(root, fileStat.name));
-
-					//this.log('adding to zip:', file);
-
-					observer.next([file, toFile])
-
-					next();
-				});
+				return Observable.throw(err);
 			}
-
-			walker.on('end', () => {
-				observer.complete();
-			});
-
-			walker.on('nodeError', (__, { error }) => {
-				observer.error(error);
-				dispose();
-			});
-			walker.on('directoryError', (__, { error }) => {
-				observer.error(error);
-				dispose();
-			});
-
-			return dispose;
 		});
 	}
-	deleteLocalFile(fileName) {
-		const rimraf = require('rimraf');
+	getFileList(pathToCartridgesDir: string, { ignoreList = [] as Array<string> }): Observable<string[]> {
+		const parentProcessingFolder = resolve(pathToCartridgesDir, '..');
 
+
+		return new Observable<string[]>(observer => {
+			const tokenSource = new CancellationTokenSource();
+
+			workspace
+				.findFiles(
+					new RelativePattern(pathToCartridgesDir, '**/*.*'),
+					undefined,
+					undefined,
+					tokenSource.token
+				).then(function (files) {
+					files.forEach(file => {
+						if (!ignoreList.some(ignore => !!file.fsPath.match(ignore))) {
+							observer.next([
+								file.fsPath,
+								file.fsPath.replace(parentProcessingFolder + sep, '')
+							]);
+						}
+					});
+					observer.complete();
+				}, function (err) {
+					observer.error(err);
+					tokenSource.dispose();
+				})
+			return () => {
+				tokenSource.dispose();
+			}
+		});
+	}
+	deleteLocalFile(fileName): Observable<undefined> {
 		return Observable.create(observer => {
 			let isCanceled = false;
 
-			rimraf(fileName, () => {
+			unlink(fileName, err => {
 				if (!isCanceled) {
 					observer.next();
 					observer.complete();
 				}
 			});
-			// setTimeout(() => {
-			//         observer.next();
-			//         observer.complete();
-			// });
-
-
 			return () => { isCanceled = true }
 		});
 	}
-	zipFiles(pathToCartridgesDir, cartridgesPackagePath, options) {
-		const yazl = require('yazl');
-		const fs = require('fs');
+	zipFiles(pathToCartridgesDir, { ignoreList = [] as Array<string> }) {
+		return Observable.fromPromise(import('yazl'))
+			.flatMap(yazl => {
+				return this.getFileList(pathToCartridgesDir, { ignoreList })
+					.reduce((zipFile, files) => {
+						if (files.length === 1) {
+							zipFile.addEmptyDirectory(files[0]);
+						} else if (files.length === 2) {
+							zipFile.addFile(files[0], files[1]);
+						} else {
+							throw new Error('Unexpected argument');
+						}
+						return zipFile;
+					}, new yazl.ZipFile())
+					.flatMap(zipFile => {
+						return new Observable<ReadStream>(observer => {
+							zipFile.once('error', err => observer.error(err));
 
-		return Observable.create(observer => {
-			let zipFile = new yazl.ZipFile();
-			var inputStream, outputStream;
+							observer.next(zipFile.outputStream);
 
-			let subscription = this.getFileList(pathToCartridgesDir, options).subscribe(
-				// next
-				files => {
-					if (files.length === 1) {
-						zipFile.addEmptyDirectory(files[0]);
-					} else if (files.length === 2) {
-						zipFile.addFile(files[0], files[1]);
-					} else {
-						observer.error(new Error('Unexpected argument'));
-					}
-				},
-				// error
-				err => {
-					observer.error(err);
-				},
-				// complite
-				() => {
-					zipFile.end();
-					inputStream = fs.createWriteStream(cartridgesPackagePath);
-					outputStream = zipFile.outputStream;
+							finished(zipFile.outputStream, (err) => {
+								if (err) {
+									observer.error(err);
+								} else {
+									observer.complete();
+								}
+							});
 
-					zipFile.outputStream
-						.pipe(inputStream)
-						.once('close', () => { observer.next(); observer.complete() })
-						.once('error', err => observer.error(err));
-				}
-			);
+							zipFile.end();
 
-			return () => {
-				if (outputStream && inputStream) {
-					outputStream.unpipe(inputStream);
-					inputStream.end();
-				}
-				zipFile = null;
-
-				subscription.unsubscribe()
-				subscription = null;
-			}
-		});
+							return () => {
+								zipFile.outputStream.destroy();
+							}
+						});
+					});
+			});
 	}
-	uploadCartridges(
+	uploadCartridge(
 		pathToCartridgesDir,
-		notify = (string) => { },
-		options = {}
+		notify = (arg: string) => { },
+		{ ignoreList = [] as Array<string> }
 	) {
-
 
 		const processingFolder = pathToCartridgesDir.split(sep).pop();
 		const cartridgesZipFileName = join(pathToCartridgesDir, processingFolder + '_cartridge.zip');
 
 
-		return this.deleteLocalFile(cartridgesZipFileName)
+		return this.delete(cartridgesZipFileName, pathToCartridgesDir)
 			.do(() => {
-				notify(`[${processingFolder}] Deleting local zip`);
+				notify(`[${processingFolder}] Deleting remote zip (if any)`);
 			})
 			.flatMap(() => {
 				notify(`[${processingFolder}] Zipping`);
-				return this.zipFiles(pathToCartridgesDir, cartridgesZipFileName, options)
+				return this.zipFiles(pathToCartridgesDir, { ignoreList })
 			})
-			.flatMap(() => {
-				notify(`[${processingFolder}] Deleting remote zip`);
-				return this.delete(cartridgesZipFileName, pathToCartridgesDir)
-			})
-			.flatMap(() => {
+			.flatMap((stream) => {
 				notify(`[${processingFolder}] Sending zip to remote`);
-				return this.post(cartridgesZipFileName, pathToCartridgesDir)
-			})
-			.flatMap(() => {
-				notify(`[${processingFolder}] Deleting local zip...`);
-				return this.deleteLocalFile(cartridgesZipFileName);
+				return this.postStream(cartridgesZipFileName, stream, pathToCartridgesDir)
 			})
 			.flatMap(() => {
 				notify(`[${processingFolder}] Unzipping remote zip`);
@@ -438,3 +364,36 @@ export default class WebDav {
 	}
 }
 
+export function readConfigFile(configFilename: string) {
+	return new Observable<DavOptions>(observer => {
+		const stream = createReadStream(configFilename);
+		let chunks: Buffer[] = [];
+
+		// Listen for data
+		stream.on('data', chunk => {
+			chunks.push(chunk);
+		});
+
+		stream.on('error', err => {
+			observer.error(err);
+		}); // Handle the error
+
+		// File is done being read
+		stream.on('close', () => {
+			try {
+				const conf = JSON.parse(Buffer.concat(chunks).toString());
+				conf.configFilename = configFilename;
+				observer.next(conf);
+				observer.complete();
+				chunks = <any>null;
+			} catch (err) {
+				observer.error(err);
+			}
+		});
+
+		return () => {
+			chunks = <any>null;
+			stream.close();
+		};
+	});
+}

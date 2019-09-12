@@ -3,16 +3,17 @@ import {
 	IPCMessageReader, IPCMessageWriter,
 	createConnection, IConnection,
 	TextDocuments, InitializeResult, DocumentLinkParams, DocumentLink, Range, Position,
-	Hover
+	Hover,
+	WorkspaceFolder
 } from 'vscode-languageserver';
 import { getLanguageService } from './langServer/htmlLanguageService';
 
-import Uri from 'vscode-uri';
-import { join } from 'path';
+import { URI } from 'vscode-uri';
 
 import { readFile } from 'fs';
-import * as glob from 'glob';
 import { EventEmitter } from 'events';
+
+import { enableLinting, validateTextDocument, onDidChangeConfiguration, disableLinting } from './langServer/services/ismlLinting';
 
 // Create a connection for the server. The connection uses Node's IPC as a transport
 let connection: IConnection = createConnection(new IPCMessageReader(process), new IPCMessageWriter(process));
@@ -26,60 +27,119 @@ let documents: TextDocuments = new TextDocuments();
 // for open, change and close text document events
 documents.listen(connection);
 
-let customTagPromise: Promise<any>;
-
+let workspaceFolders: WorkspaceFolder[] = [];
 const customTagsMap = new Map<string, string>();
 
+interface ISearch {
+	resolve: Function,
+	reject: Function
+}
+var searchLastID = 1;
+const searchMap = new Map<number, ISearch>();
+
+async function findFiles(workspacePath: string, pattern: string) {
+	const currentLastID = ++searchLastID;
+
+	return new Promise<string[]>((resolve, reject) => {
+		searchMap.set(currentLastID, {
+			resolve,
+			reject
+		});
+		connection.sendNotification('find:files', { workspacePath, pattern, searchID: currentLastID });
+	});
+}
+connection.onNotification('find:filesFound', ({ searchID, result }) => {
+	const searchres = searchMap.get(searchID);
+	if (searchres) {
+		searchres.resolve(result);
+		searchMap.delete(searchID);
+	}
+});
 
 // After the server has started the client sends an initialize request. The server receives
-// in the passed params the rootPath of the workspace plus the client capabilities. 
-let workspaceRoot: string | undefined;
+// in the passed params the rootPath of the workspace plus the client capabilities.
 let languageService = getLanguageService();
 let userFormatParams;
+
+connection.onInitialized(() => {
+	parseFilesForCustomTags(workspaceFolders);
+	connection.workspace.onDidChangeWorkspaceFolders((event) => {
+		connection.workspace.getWorkspaceFolders().then(_workspaceFolders => {
+			workspaceFolders = _workspaceFolders || [];
+
+			workspaceFolders = workspaceFolders.filter(workspaceFolder => workspaceFolder.uri.includes('file:'))
+
+			parseFilesForCustomTags(workspaceFolders);
+		});
+		connection.console.log('Workspace folder change event received');
+	});
+});
+
+
+
 connection.onInitialize((params): InitializeResult => {
 
-	if (params.rootPath) {
-		connection.console.log('isml server init..');
+	connection.console.log('isml server init...' + JSON.stringify(params.workspaceFolders));
 
-		customTagPromise = parseFilesForCustomTags(params.rootPath);
-
-
-		userFormatParams = params.initializationOptions.formatParams;
-		workspaceRoot = params.rootPath;
-		return {
-			capabilities: {
-				// Tell the client that the server works in FULL text document sync mode
-				textDocumentSync: documents.syncKind,
-				//hoverProvider: true
-				documentLinkProvider: {
-					resolveProvider: true
-				},
-				documentRangeFormattingProvider: true,
-				documentHighlightProvider: true,
-				hoverProvider: true,
-				completionProvider: {
-					resolveProvider: false
-				},
-				documentSymbolProvider: true
-			}
-		}
+	if (params.initializationOptions.enableHtmlHint) {
+		connection.console.log('htmlhint enabled');
+		enableLinting(connection, documents);
 	} else {
-		connection.console.log('isml server would not work without project');
-		return {
-			capabilities: {
+		disableLinting(connection, documents);
+		connection.console.log('htmlhint disabled');
+	}
 
+
+	// The VS Code htmlhint settings have changed. Revalidate all documents.
+	connection.onDidChangeConfiguration((args) => {
+		onDidChangeConfiguration(connection, documents, args);
+	});
+
+	userFormatParams = params.initializationOptions.formatParams;
+	workspaceFolders = params.workspaceFolders || [];
+
+	workspaceFolders = workspaceFolders.filter(workspaceFolder => workspaceFolder.uri.includes('file:'))
+
+	return {
+		capabilities: {
+			// Tell the client that the server works in FULL text document sync mode
+			textDocumentSync: documents.syncKind,
+			//hoverProvider: true
+			documentLinkProvider: {
+				resolveProvider: true
+			},
+			documentRangeFormattingProvider: true,
+			documentHighlightProvider: true,
+			hoverProvider: true,
+			completionProvider: {
+				resolveProvider: false
+			},
+			documentSymbolProvider: true,
+			workspace: {
+				workspaceFolders: {
+					supported: true,
+					changeNotifications: true
+				}
 			}
 		}
 	}
+
 });
+
+
 
 let lastFileLines: string[] = [];
 connection.onDocumentLinks((params: DocumentLinkParams) => {
 
 	//connection.console.log('onDocumentLinks ' + JSON.stringify(params));
 
-	return customTagPromise.then(() => new Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		let document = documents.get(params.textDocument.uri);
+
+		if (!document) {
+			reject(new Error('Unable find document'));
+			return;
+		}
 
 		const fileLines = document.getText().split('\n');
 		const documentLinks: DocumentLink[] = [];
@@ -119,7 +179,7 @@ connection.onDocumentLinks((params: DocumentLinkParams) => {
 		});
 		resolve(documentLinks);
 
-	}));
+	});
 });
 
 connection.onDocumentLinkResolve(documentLink => {
@@ -145,49 +205,42 @@ connection.onDocumentLinkResolve(documentLink => {
 				}
 
 
-				if (!fileToOpen.includes('.isml')) {
+				if (!fileToOpen.endsWith('.isml')) {
 					fileToOpen = fileToOpen + '.isml';
 				}
+				Promise.all(workspaceFolders.map(workspaceFolder => {
+					return findFiles(workspaceFolder.uri, '**/templates/**/' + fileToOpen);
+				})).then(result => {
+					const files = ([] as string[]).concat(...result);
 
-				// options is optional
-				glob(join('**', 'templates', '**', fileToOpen), {
-					cwd: workspaceRoot,
-					nodir: true,
-					follow: false,
-					ignore: ['**/node_modules/**', '**/.git/**'],
-					cache: true
-				}, (er, files) => {
-					if (er) {
-						connection.console.error('fileToOpen opening ERROR ' + JSON.stringify(er))
-						reject(er);
+					if (!files || !files.length) {
+						connection.console.warn('Not found files to open');
+						reject(new Error('No files to open'));
+					} else if (files.length === 1) {
+						let doc = DocumentLink.create(
+							documentLink.range,
+							URI.file(files.pop()!).toString()
+						);
+						connection.console.log('fileToOpen opening: ' + JSON.stringify(doc));
+						resolve(doc);
 					} else {
-						if (!files && !files.length) {
-							connection.console.warn('Not found files to open');
-							reject(new Error('No files to open'));
-						} else if (files.length === 1) {
-							let doc = DocumentLink.create(
-								documentLink.range,
-								Uri.file(join(workspaceRoot + '', files.pop())).toString()
-							);
-							connection.console.log('fileToOpen opening: ' + JSON.stringify(doc));
-							resolve(doc);
-						} else {
-							selectedFilesEmitter.once('selectedfile', selected => {
-								if (selected) {
-									let doc = DocumentLink.create(
-										documentLink.range,
-										Uri.file(join(workspaceRoot + '', selected)).toString()
-									);
-									connection.console.log('fileToOpen opening: ' + JSON.stringify(doc));
-									resolve(doc);
-								} else {
-									resolve();
-								}
-							});
-							connection.sendNotification('isml:selectfiles', { data: files });
-						}
+						selectedFilesEmitter.once('selectedfile', selected => {
+							if (selected) {
+								let doc = DocumentLink.create(
+									documentLink.range,
+									URI.file(selected).toString()
+								);
+								connection.console.log('fileToOpen opening: ' + JSON.stringify(doc));
+								resolve(doc);
+							} else {
+								resolve();
+							}
+						});
+						connection.sendNotification('isml:selectfiles', { data: files });
 					}
-				})
+
+				});
+
 				return true;
 			} else {
 				return false;
@@ -204,12 +257,21 @@ connection.onNotification('isml:selectedfile', test => {
 connection.onDocumentRangeFormatting(formatParams => {
 	let document = documents.get(formatParams.textDocument.uri);
 
-	connection.console.log('111' + JSON.stringify(formatParams.options))
-	return languageService.format(document, formatParams.range, Object.assign({}, userFormatParams, formatParams.options));
+	if (!document) {
+		connection.console.error('123: Unable find document')
+		return;
+	}
+
+
+	return languageService.format(document, formatParams.range, Object.assign({}, userFormatParams, formatParams.options), connection);
 });
 
 connection.onDocumentHighlight(docParam => {
 	let document = documents.get(docParam.textDocument.uri);
+	if (!document) {
+		connection.console.error('124: Unable find document')
+		return;
+	}
 
 	return languageService.findDocumentHighlights(
 		document,
@@ -220,7 +282,10 @@ connection.onDocumentHighlight(docParam => {
 
 connection.onHover(hoverParam => {
 	let document = documents.get(hoverParam.textDocument.uri);
-
+	if (!document) {
+		connection.console.error('125: Unable find document')
+		return;
+	}
 	return languageService.doHover(
 		document,
 		hoverParam.position,
@@ -231,7 +296,10 @@ connection.onHover(hoverParam => {
 
 connection.onCompletion(params => {
 	let document = documents.get(params.textDocument.uri);
-
+	if (!document) {
+		connection.console.error('125: Unable find document')
+		return;
+	}
 	return languageService.doComplete(
 		document,
 		params.position,
@@ -239,59 +307,66 @@ connection.onCompletion(params => {
 	);
 });
 
+// A text document has changed. Validate the document.
+documents.onDidChangeContent((event) => {
+	// the contents of a text document has changed
+	validateTextDocument(connection, event.document);
+});
+
 connection.onDocumentSymbol(params => {
 	let document = documents.get(params.textDocument.uri);
+	if (!document) {
+		connection.console.error('126: Unable find document')
+		return;
+	}
 
 	return languageService.findDocumentSymbols(document, languageService.parseHTMLDocument(document));
 });
+
 
 
 // Listen on the connection
 connection.listen();
 
 process.once('uncaughtException', err => {
-	connection.console.error(err);
+	console.log(err);
+	connection.console.error(String(err) + '\n' + err.stack);
 	connection.dispose();
 	process.exit(-1);
 })
 
 
-function parseFilesForCustomTags(rootPath) {
-	return new Promise((resolve, reject) => {
-		glob(join('**', 'templates', '**', '*modules*.isml'), {
-			cwd: rootPath,
-			nodir: true,
-			follow: false,
-			ignore: ['**/node_modules/**', '**/.git/**'],
-			cache: true
-		}, (er, files) => {
-			if (er) {
-				connection.console.error(er);
-				reject(er);
-			} else {
-				const processedFiles = files.map(file => new Promise((resolve, reject) => {
-					readFile(join(rootPath, file), (err, data) => {
-						if (err) {
-							connection.console.error(err.toString());
-							reject(err);
-						} else {
-							const fileContent = data.toString().replace(/[\s\n\r]/ig, '');
+function parseFilesForCustomTags(workspaceFolders: WorkspaceFolder[] | null) {
+	if (workspaceFolders) {
+		customTagsMap.clear();
+		connection.console.log('Finding files with custom tags... ');
+		workspaceFolders.forEach(workspaceFolder => {
+			findFiles(workspaceFolder.uri, '**/*modules*.isml').then(files => {
+				connection.console.log('Found files --' + JSON.stringify(files));
+				if (files) {
+					files.forEach(file => new Promise((resolve, reject) => {
+						readFile(file, (err, data) => {
+							if (err) {
+								connection.console.error(err.toString());
+								reject(err);
+							} else {
+								const fileContent = data.toString().replace(/[\s\n\r]/ig, '');
 
-							fileContent.replace(/\<ismodule(.+?)\>/ig, function (str, $1) {
-								const name = (/name\=[\'\"](.+?)[\'\"]/ig).exec($1);
-								const template = (/template\=[\'\"](.+?)[\'\"]/ig).exec($1);
+								fileContent.replace(/\<ismodule(.+?)\>/ig, function (str, $1) {
+									const name = (/name\=[\'\"](.+?)[\'\"]/ig).exec($1);
+									const template = (/template\=[\'\"](.+?)[\'\"]/ig).exec($1);
 
-								if (name && template) {
-									customTagsMap.set(name[1], template[1]);
-								}
-								return '';
-							})
-							resolve();
-						}
-					})
-				}));
-				Promise.all(processedFiles).then(resolve, reject);
-			}
+									if (name && template) {
+										customTagsMap.set(name[1], template[1]);
+									}
+									return '';
+								})
+								resolve();
+							}
+						})
+					}));
+				}
+			})
 		});
-	});
+	}
 }

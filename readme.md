@@ -1,16 +1,17 @@
-<h2 align="center">Work your Demandware/Salesforce Cloud code</h4>
+<h2 align="center">Work your Demandware/Salesforce Cloud code</h2>
 
-A VS Code extension to work with Demandware/Salesforce Cloud code on Sandbox that support the Script Debugger API (SDAPI) 1.0
+A VS Code extension to work with Demandware/Salesforce Cloud code on Sandbox that support the Script Debugger API (SDAPI) 2.0
 
 **Supported features**
 * Upload cartridges and watch changes
 * Syntax highlight for `isml` and `ds` files
+* Validate isml files (based on htmlhint plugin, configurable by `.htmlhintrc`)
 * Advanced support of ISML syntax
-* * hover information
-* * autocomplete tags
-* * auto formatting
-* * find Symbols
-* * highlighting selected tags
+  * hover information
+  * autocomplete tags
+  * auto formatting
+  * find Symbols
+  * highlighting selected tags
 * Setting breakpoints
 * Stepping
 * Change variables values in running threads
@@ -22,6 +23,7 @@ A VS Code extension to work with Demandware/Salesforce Cloud code on Sandbox tha
 * Quick open `isinclude` templates and custom tags via Ctrl+Click (as links)
 * Cartridges overview in explorer
 * Server logs viewer with syntax highlight
+* [Multi-root Workspaces](https://code.visualstudio.com/docs/editor/multi-root-workspaces) (allows to work with different repo in same time).
 
 > WARNING: Some users had reported that debugger completely halts sandbox. Currently, this issue is not fixed and no known steps to reproduce. If you have some info about it please share. So please, before debugger usage make sure that you have availability to restart sandbox for the case if extension halts yours.
 
@@ -40,7 +42,7 @@ When your launch config is set up, you can debug your project! Pick a launch con
 The extension operates in one mode - it launch an adapter that connects to sandbox. Just like when using the other debugger, you configure with a `.vscode/launch.json` file in the root directory of your project. You can create this file manually, or Code will create one for you if you try to run your project, and it doesn't exist yet.
 
 ### Launch
-Example `launch.json` configs with `"request": "launch"`. You must specify hostname and other credentials. `cartridgeroot` could be set to `auto` so extention will try do detect path, othervise please set absolute path to folder that contains cartridges. Note: `workspaceroot` should be set to `${workspaceRoot}` unless you know what you doing.
+Example `launch.json` configs with `"request": "launch"`. You must not specify hostname and other credentials. Since they will be loaded from corresponding `dw.json` file.
 
 ```json
 {
@@ -49,30 +51,20 @@ Example `launch.json` configs with `"request": "launch"`. You must specify hostn
       {
           "type": "prophet",
           "request": "launch",
-          "name": "Attach to Sandbox",
-          "hostname": "*.demandware.net",
-          "username": "<username>",
-          "password": "<password>",
-          "codeversion": "version1",
-          "cartridgeroot": "auto",
-          "workspaceroot": "${workspaceRoot}"
+          "name": "Attach to Sandbox"
       }
     ]
 }
 ```
 
-> Note: for windows user `cartridgeroot` should be set as absolute path to cartridges folder, i.e. `C:\\some\\folder\\path\\to\\cartridges`
-
-If you want to use a different sandboxes, you can also setup several configurations.
-
 
 ### Other optional launch config fields
-* `trace`: When true, the adapter logs its own diagnostic info to console. This is often useful info to include when filing an issue on GitHub. 
+* `trace`: When true, the adapter logs its own diagnostic info to console. This is often useful info to include when filing an issue on GitHub.
 
 
 ## Using the uploader
 
-Configuration for uploader should live in the file named `dw.json` (similar is used by `dwupload` and is compatible witn the uploader). Configuration should be placed in the directory that contains all cartridges.
+Configuration for uploader should be in the `cartridges` folder in a file named `dw.json` (similar is used by `dwupload` and is compatible witn the uploader).
 
 ```
 ├── bc_library
@@ -102,19 +94,24 @@ You can temporarily disable watching or force upload cartridges (i.e. clean proj
 
 (press F1 and select command)
 
+> Note: the extension relies on the `.project` files to detect cartridge so it must not be added to `files.exclude`
+
 #### Other configuration
 
-* `extension.prophet.cartridges.path` - List of cartridges separated by colon. Allows  quick open don't ask a user to choose the file. Automatically open file that match first cartridge in list.
+* `extension.prophet.cartridges.path` - List of cartridges separated by colon. Allows quick open - don't ask a user to choose the file. Automatically open file that match first cartridge in list.
 * `extension.prophet.ismlServer.activateOn` - allow activate isml server for non standatd (isml) files, ex. `html`
-
+* `extension.prophet.clean.on.start` - allows to enable/disable code upload on editor startup (enabled by default)
+* `extension.prophet.ignore.list` - list of regexp for files/folders should be excludes from zipping during clean (not from watching)
+* `extension.prophet.htmlhint.enabled` - enable/disable linting of isml files
+* `extension.prophet.sandbox.filesystem.enabled` - Enable Sandbox File System Workspace
 
 ### Improve experience
 
 Experience can be improved by using follow `jsconfig.json` in the folder with cartridges. It allows resolve absolute paths in scripts correctly, (except it starts with `~` or `*`).
 
-> Note: client side JS files must have it's own `jsconfig.json` file.
+> Note: client side JS files must have their own `jsconfig.json` files and each workspace should have it's own configuration.
 
-Code assistance can be improved even more by adding `d.ts` definition for the project. Definitions for Commerce Cloud objects can be downloaded from [repo](https://bitbucket.org/demandware/dw-api-types/overview)
+Code assistance can be improved even more by adding `d.ts` definition for the project. Definitions for Commerce Cloud objects can be downloaded from [repo](https://github.com/SalesforceCommerceCloud/dw-api-types)
 
 ```json
 {
@@ -141,7 +138,7 @@ Code assistance can be improved even more by adding `d.ts` definition for the pr
 > * Replace cartridge1...cartridgeN for your real cartriges
 > * Replace ../types/ to path where you are unpacked type definitions
 
-To help VSCode determinate type of variable/argument JSDoc can be used. For instance:
+To help VSCode determine the type of variable/argument JSDoc can be used. For instance:
 
 ```javascript
 // local variable
@@ -190,4 +187,11 @@ There are many ways to contribute to Prophet.
 If you have made or wish to make some features/fixes, please, make a fork of this repo, do your changes, and send your pull request to this repo into `develop` branch. After review it will be merged to `develop`, and during some time it will be available in `master` and extention itself. Before making pull request, please, make that it doesn't break anything. (currently there no tests, so test that covers current functionality are welcomed)
 
 
+
+### Contributors
+
+* [Thomas Theunen](https://github.com/taurgis)
+* [SGD](https://github.com/SGD1953)
+* [Dmytro Katashev](https://github.com/ufnd)
+* and special thanks to [Astound Commerce](https://astoundcommerce.com/)
 

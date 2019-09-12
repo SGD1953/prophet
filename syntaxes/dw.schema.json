@@ -17,7 +17,7 @@
         "password": {
             "type":"string",
             "default": "Passw0rd!",
-            "description": "User's password"
+            "description": "User's password (will be asked if empty)"
         },
         "code-version": {
             "type":"string",
@@ -48,9 +48,10 @@
             "default": false,
             "description": "Enable more verbose logging"
         },
-        "root" : {
+        "cartridgeResolution" : {
             "type":"string",
-            "description": "Optional path to cartridges if dw.json is not in cartridges root. Relative to dw.json"
+            "default": "ask",
+            "description": "Leaves all the cartridges instead of asking"
         }
     },
     "dependencies": {
@@ -60,14 +61,12 @@
             "required" :[
                 "hostname",
                 "username",
-                "password",
                 "version"
             ]
         },{
             "required" :[
                 "hostname",
                 "username",
-                "password",
                 "code-version"
             ]
         }
