@@ -8,6 +8,7 @@ import { join, sep, dirname } from 'path';
 
 const CONCURRENT_CARTRIDGES_UPLOADS: number = 4;
 const CONCURRENT_FILE_UPLOADS: number = 5;
+const FILE_EVENT_TIMEOUTS = new Set<NodeJS.Timeout>();
 
 export function getWebDavClient(config: DavOptions, outputChannel: OutputChannel, rootDir: string): Observable<WebDav> {
 	return Observable.create(observer => {
@@ -46,9 +47,19 @@ function fileWatcher(config, cartRoot: string): Observable<['change' | 'delete' 
 				);
 			});
 
+			// Save a callbacks in a set and wait for 300ms, if more changes
+			// occur reset the timers and keep waiting until no changes occurred
+			// for 300ms
 			// manually check for the excludes in the callback
 			var callback = (method: 'change' | 'delete' | 'create') => ((uri: Uri) => {
-				observer.next([method, uri.fsPath])
+				FILE_EVENT_TIMEOUTS.forEach((timeout: NodeJS.Timeout) => {
+					timeout.refresh();
+				});
+				const timeout = setTimeout(() => {
+					FILE_EVENT_TIMEOUTS.delete(timeout);
+					observer.next([method, uri.fsPath]);
+				}, 300);
+				FILE_EVENT_TIMEOUTS.add(timeout);
 			});
 			// add the listerners to all watchers
 			watchers.forEach(watcher => {
@@ -201,7 +212,7 @@ function uploadAndWatch(
 		.flatMap(() => {
 			outputChannel.appendLine(`Watching files`);
 			return fileWatcher(config, rootDir)
-				.delay(300)// delay uploading file (allow finish writting for large files)
+				// .delay(300)// delay uploading file (allow finish writting for large files)
 				.mergeMap(([action, fileName]) => {
 					const date = new Date().toTimeString().split(' ').shift();
 
